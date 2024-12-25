@@ -16,7 +16,7 @@ const Experience = () => {
       company: "CodeZones IT Services",
       date: "Jan 2023 - Present",
       points: [
-        "Successfully developed and maintained backend code for over 20 web applications using Laravel PHP framework",
+        "Successfully developed and maintained backend code for over 20+ web applications using Laravel PHP framework",
         "Designed and implemented database schemas to support seamless front-end integration",
         "Built and integrated RESTful APIs to facilitate robust communication",
         "Managed deployment processes across various hosting platforms",

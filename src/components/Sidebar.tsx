@@ -15,6 +15,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { icon: Briefcase, label: 'Experience', href: '#experience' },
     { icon: Code, label: 'Projects', href: '#projects' },
     { icon: Cpu, label: 'Skills', href: '#skills' },
+    { icon: User, label: 'Reviews', href: '#reviews' },
     { icon: Mail, label: 'Contact', href: '#contact' },
   ];
 

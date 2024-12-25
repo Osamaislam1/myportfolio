@@ -113,7 +113,7 @@ const About = () => {
             className="lg:col-span-2 space-y-8"
           >
             <p className="text-xl text-gray-300 leading-relaxed">
-              Experienced Full Stack Developer with a strong background in Laravel and PHP, offering a unique blend of front-end and back-end expertise. Proven track record of successfully delivering over 30 web applications, showcasing proficiency in crafting scalable, efficient, and user-centric solutions that drive business growth and customer satisfaction.
+              Experienced Full Stack Developer with a strong background in Laravel and PHP, offering a unique blend of front-end and back-end expertise. Proven track record of successfully delivering over 30+ web applications, showcasing proficiency in crafting scalable, efficient, and user-centric solutions that drive business growth and customer satisfaction.
             </p>
             
             <div className="grid grid-cols-2 gap-6">

@@ -1,10 +1,12 @@
+// src/components/Contact.tsx
+
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { Mail, Send, CheckCircle, AlertCircle, User, AtSign } from 'lucide-react';
 
-// ... AnimatedBackground component remains the same ...
+// AnimatedBackground component
 const AnimatedBackground = () => {
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<number[]>([]);
 
   useEffect(() => {
     setParticles(Array.from({ length: 20 }, (_, i) => i));
@@ -32,7 +34,7 @@ const AnimatedBackground = () => {
   );
 };
 
-const Contact = () => {
+const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,15 +43,15 @@ const Contact = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     
@@ -86,16 +88,15 @@ const Contact = () => {
       } else {
         throw new Error(result.message || 'Something went wrong!');
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || "Failed to send message. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Rest of the JSX remains the same...
   return (
-    <section className="min-h-screen bg-gray-900 relative overflow-hidden px-4 py-20">
+    <section id="contact" className="min-h-screen bg-gray-900 relative overflow-hidden px-4 py-20">
       <AnimatedBackground />
       
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
@@ -132,6 +133,7 @@ const Contact = () => {
                 <p className="text-sm">osama.islam29@gmail.com</p>
               </div>
             </div>
+            {/* You can add more contact info here if needed */}
           </motion.div>
         </div>
 
@@ -140,7 +142,7 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl"
+          className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl relative"
         >
             {/* Status Messages */}
             {isSubmitted && (
