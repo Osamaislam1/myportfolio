@@ -63,6 +63,7 @@ const Skills = () => {
     visible: {
       transition: {
         staggerChildren: 0.1,
+        ease: "easeOut"
       },
     },
   };
@@ -74,6 +75,7 @@ const Skills = () => {
       y: 0,
       transition: {
         duration: 0.5,
+        ease: "easeOut"
       },
     },
   };
@@ -105,7 +107,7 @@ const Skills = () => {
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -126,7 +128,9 @@ const Skills = () => {
             <motion.div
               key={category.name}
               variants={skillVariants}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700 hover:border-gray-600 transition-colors"
+              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700 hover:border-gray-600 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <div 
                 className="cursor-pointer"
@@ -139,21 +143,47 @@ const Skills = () => {
                     </div>
                     <h3 className="text-xl font-bold text-white">{category.name}</h3>
                   </div>
-                  {expandedCategory === categoryIndex ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400" />
-                  ) : (
+                  <motion.div
+                    initial={false}
+                    animate={{ rotate: expandedCategory === categoryIndex ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: "anticipate" }}
+                  >
                     <ChevronDown className="w-5 h-5 text-gray-400" />
-                  )}
+                  </motion.div>
                 </div>
               </div>
 
-              <AnimatePresence>
+              <AnimatePresence mode="sync">
                 {expandedCategory === categoryIndex && (
                   <motion.p
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    animate={{ 
+                      opacity: 1, 
+                      height: 'auto',
+                      transition: {
+                        height: {
+                          duration: 0.4,
+                          ease: "easeOut"
+                        },
+                        opacity: {
+                          duration: 0.25,
+                          delay: 0.15
+                        }
+                      }
+                    }}
+                    exit={{ 
+                      opacity: 0,
+                      height: 0,
+                      transition: {
+                        height: {
+                          duration: 0.4,
+                          ease: "easeInOut"
+                        },
+                        opacity: {
+                          duration: 0.25
+                        }
+                      }
+                    }}
                     className="text-gray-400 mb-6"
                   >
                     {category.description}
@@ -167,7 +197,7 @@ const Skills = () => {
                     key={skill.name}
                     initial={{ opacity: 0, x: -20 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.5, delay: skillIndex * 0.1 }}
+                    transition={{ duration: 0.5, delay: skillIndex * 0.1, ease: "easeOut" }}
                     className="group relative"
                     onMouseEnter={() => setHoveredSkill(`${categoryIndex}-${skillIndex}`)}
                     onMouseLeave={() => setHoveredSkill(null)}
@@ -185,7 +215,7 @@ const Skills = () => {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${skill.level}%` } : {}}
-                        transition={{ duration: 1, delay: skillIndex * 0.1 }}
+                        transition={{ duration: 1, delay: skillIndex * 0.1, ease: "easeOut" }}
                         className={`h-full rounded-full bg-gradient-to-r ${category.color}`}
                       />
                     </div>
@@ -196,7 +226,7 @@ const Skills = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
                           transition={{ 
-                            duration: 0.3,
+                            duration: 0.2,
                             ease: "easeOut"
                           }}
                           className="mt-2 text-sm text-gray-400 bg-gray-800/90 p-2 rounded-md backdrop-blur-sm"
