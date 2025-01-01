@@ -25,7 +25,7 @@ const Education = () => {
       title: "BCA",
       institution: "Integral University",
       year: "July 2022",
-      grade: "CGPA: 9.07 (86.16%)",
+      grade: "CGPA: 9.07",
       icon: GraduationCap,
       color: "from-purple-500 to-pink-500",
       achievements: [
@@ -39,7 +39,7 @@ const Education = () => {
       title: "Intermediate",
       institution: "N.J.E School",
       year: "2018",
-      grade: "Percentage: 75%",
+      grade: null,
       icon: BookOpen,
       color: "from-blue-500 to-cyan-500",
       achievements: [
@@ -53,7 +53,7 @@ const Education = () => {
       title: "High School",
       institution: "N.J.E School",
       year: "2016",
-      grade: "CGPA: 8.2 (77.9%)",
+      grade: null,
       icon: School,
       color: "from-green-500 to-emerald-500",
       achievements: [
@@ -142,10 +142,12 @@ const Education = () => {
                       <Calendar className="w-4 h-4" />
                       {edu.year}
                     </p>
-                    <p className="text-gray-300 flex items-center gap-2 mt-1">
-                      <Star className="w-4 h-4 text-yellow-400" />
-                      {edu.grade}
-                    </p>
+                    {edu.grade && (
+                      <p className="text-gray-300 flex items-center gap-2 mt-1">
+                        <Star className="w-4 h-4 text-yellow-400" />
+                        {edu.grade}
+                      </p>
+                    )}
                   </div>
                 </div>
 

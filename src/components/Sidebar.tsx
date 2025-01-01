@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Home, User, Briefcase, Code, 
@@ -8,6 +8,7 @@ import {
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   const navItems = [
     { icon: Home, label: 'Home', href: '#home' },
@@ -23,6 +24,27 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { icon: Github, href: 'https://github.com/Osamaislam1', label: 'GitHub' },
     { icon: Linkedin, href: 'https://linkedin.com/in/osama-islam', label: 'LinkedIn' },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item => item.href.substring(1));
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
@@ -76,27 +98,36 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           {/* Navigation */}
           <nav className="flex-1 px-2 py-4 overflow-y-auto">
             <ul className="space-y-2">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <motion.a
-                    href={item.href}
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 backdrop-blur-sm"
-                  >
-                    <item.icon className="w-5 h-5 min-w-[1.25rem] group-hover:text-blue-400 transition-colors" />
-                    <motion.span
-                      initial={false}
-                      animate={{ 
-                        opacity: isOpen ? 1 : 0,
-                        width: isOpen ? 'auto' : 0
-                      }}
-                      className="ml-4 whitespace-nowrap overflow-hidden"
+              {navItems.map((item) => {
+                const isActive = activeSection === item.href.substring(1);
+                return (
+                  <li key={item.href}>
+                    <motion.a
+                      href={item.href}
+                      whileHover={{ scale: 1.02 }}
+                      className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+                        isActive 
+                          ? 'bg-gradient-to-r from-blue-600/40 to-purple-600/40 text-white' 
+                          : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20'
+                      }`}
                     >
-                      {item.label}
-                    </motion.span>
-                  </motion.a>
-                </li>
-              ))}
+                      <item.icon className={`w-5 h-5 min-w-[1.25rem] transition-colors ${
+                        isActive ? 'text-blue-400' : 'group-hover:text-blue-400'
+                      }`} />
+                      <motion.span
+                        initial={false}
+                        animate={{ 
+                          opacity: isOpen ? 1 : 0,
+                          width: isOpen ? 'auto' : 0
+                        }}
+                        className="ml-4 whitespace-nowrap overflow-hidden"
+                      >
+                        {item.label}
+                      </motion.span>
+                    </motion.a>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -145,18 +176,27 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 {/* Navigation */}
                 <nav className="flex-1 px-2 py-4 overflow-y-auto">
                   <ul className="space-y-2">
-                    {navItems.map((item) => (
-                      <motion.li key={item.href} whileHover={{ scale: 1.02 }}>
-                        <a
-                          href={item.href}
-                          onClick={() => setIsMobileOpen(false)}
-                          className="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 backdrop-blur-sm"
-                        >
-                          <item.icon className="w-5 h-5 min-w-[1.25rem] group-hover:text-blue-400 transition-colors" />
-                          <span className="ml-4 whitespace-nowrap">{item.label}</span>
-                        </a>
-                      </motion.li>
-                    ))}
+                    {navItems.map((item) => {
+                      const isActive = activeSection === item.href.substring(1);
+                      return (
+                        <motion.li key={item.href} whileHover={{ scale: 1.02 }}>
+                          <a
+                            href={item.href}
+                            onClick={() => setIsMobileOpen(false)}
+                            className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+                              isActive 
+                                ? 'bg-gradient-to-r from-blue-600/40 to-purple-600/40 text-white' 
+                                : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20'
+                            }`}
+                          >
+                            <item.icon className={`w-5 h-5 min-w-[1.25rem] transition-colors ${
+                              isActive ? 'text-blue-400' : 'group-hover:text-blue-400'
+                            }`} />
+                            <span className="ml-4 whitespace-nowrap">{item.label}</span>
+                          </a>
+                        </motion.li>
+                      );
+                    })}
                   </ul>
                 </nav>
 
