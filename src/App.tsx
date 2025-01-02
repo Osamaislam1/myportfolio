@@ -8,7 +8,7 @@ import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Education from './components/Education';
 import Contact from './components/Contact';
-import Reviews from './components/Reviews'; // Import the Reviews component
+// import Reviews from './components/Reviews';
 import CreativeLoader from './components/CreativeLoader';
 
 
@@ -43,7 +43,7 @@ function App() {
         <Projects />
         <Education />
         <Skills />
-        <Reviews /> 
+        {/* <Reviews />  */}
         <Contact />
       </main>
     </div>

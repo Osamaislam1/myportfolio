@@ -65,7 +65,7 @@ const Education = () => {
   ];
 
   return (
-    <section className="min-h-screen relative bg-gray-900 overflow-hidden py-20">
+    <section id="education" className="min-h-screen relative bg-gray-900 overflow-hidden py-20">
       {/* Animated background with gradient */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-gradient" />
