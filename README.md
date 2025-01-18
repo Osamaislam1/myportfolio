@@ -38,7 +38,7 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/portfolio.git
+git clone https://github.com/Osamaislam1/portfolio.git
 cd portfolio
 ```
 
