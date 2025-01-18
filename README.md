@@ -108,7 +108,7 @@ Your Name
 
 - Website: [Portfolio](https://osamaislam.vercel.app)
 - GitHub: [@Osamaislam1](https://github.com/Osamaislam1)
-- LinkedIn: [Your Name](https://linkedin.com/in/osama-islam)
+- LinkedIn: [Osama Islam](https://linkedin.com/in/osama-islam)
 
 ## 🙏 Acknowledgments
 
