@@ -3,17 +3,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ExternalLink, X, ChevronRight, ArrowLeft, ArrowRight, Github } from 'lucide-react';
 
+type Project = {
+  title: string;
+  description: string;
+  images: string[];
+  tech: string[];
+  details: {
+    overview: string;
+    features: string[];
+  };
+  demoUrl?: string;
+  githubUrl?: string;
+  socialMedia?: boolean;
+};
+
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [fullScreenImage, setFullScreenImage] = useState(null);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  const handleNextImage = (e) => {
+  const handleNextImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (!selectedProject) return;
     setCurrentImageIndex((prevIndex) => 
@@ -21,7 +35,7 @@ const Projects = () => {
     );
   };
 
-  const handlePrevImage = (e) => {
+  const handlePrevImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (!selectedProject) return;
     setCurrentImageIndex((prevIndex) =>
@@ -29,40 +43,63 @@ const Projects = () => {
     );
   };
 
-  const handleImageClick = (e, imageSrc) => {
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>, imageSrc: string) => {
     e.stopPropagation();
     setFullScreenImage(imageSrc);
   };
 
-  const projects = [
-    // 1) Social Media Application (No demo URL, so no button will show)
+  const projects: Project[] = [
+    // 1) Football Club Website (Griffith City FC)
     {
-      title: "Social Media Application",
-      description: "A dynamic social platform with real-time features",
+      title: "Football Club Website",
+      description: "Dynamic website for Griffith City FC with Admin Panel and Coach Portal",
       images: [
-        "/assets/images/projects/socialmedia.JPG",
-        "/assets/images/projects/socialmedia1.JPG",
-
-        "/assets/images/projects/socialmedia2.JPG",
-        // You can add more images here if desired
+        "/assets/images/projects/football-featured.png",
+        "/assets/images/projects/football.png",
       ],
-      tech: ["Laravel", "PHP", "MySQL", "WebSockets", "Livewire"],
+      tech: ["PHP", "JavaScript", "MySQL", "HTML"],
       details: {
         overview:
-          "Developed a feature-rich social media platform that enables users to connect, share content, and interact in real-time. The application showcases modern web development practices and scalable architecture.",
+          "Developed a dynamic website for Griffith City FC, integrating an Admin Panel and Coach Portal to streamline operations and enhance engagement. The platform ensures efficient match scheduling, event management, news updates, and media uploads, keeping fans informed with real-time updates. The Admin Panel allows administrators to manage matches by scheduling fixtures, updating team line-ups, venues, scores, and player statistics. Event coordination is simplified with features for adding event details, including descriptions, dates, locations, and multimedia attachments. Additionally, the panel enables seamless content publishing, allowing staff to post news articles, upload photos and videos, and showcase club achievements. The Coach Portal fosters collaboration among coaching staff. Coaches can create and manage their profiles, detailing their experience and contact information. The portal also provides a space for sharing training materials, match strategies, and insights.",
         features: [
-          "User authentication with email verification",
-          "Real-time chat using WebSockets",
-          "News feed with infinite scroll",
-          "Photo and video sharing capabilities",
-          "Friend requests and following system",
-          "Real-time notifications",
-          "Responsive design for all devices",
+          "Admin Panel for match scheduling, team line-ups, venues, scores, and player stats",
+          "Event management with descriptions, dates, locations, and multimedia attachments",
+          "News publishing and media uploads (photos, videos)",
+          "Coach Portal for profile management and collaboration",
+          "Sharing of training materials, match strategies, and insights",
+          "Real-time updates for fans and staff",
         ],
       },
     },
 
-    // 2) E-Commerce Platform (Updated live URL to mmauto.ae)
+    // 2) Modern 3D Printing Landing Page
+    {
+      title: "Modern 3D Printing Landing Page",
+      description: "Visually striking and user-friendly landing page for a 3D printing service provider.",
+      images: [
+        "/assets/images/projects/3d-landing-page.png",
+        "/assets/images/projects/3d--landing-page-2.png",
+      ],
+      tech: ["JavaScript", "CSS", "HTML5"],
+      details: {
+        overview:
+          "Developed a visually striking and user-friendly landing page for a 3D printing service provider, highlighting their advanced manufacturing capabilities and innovative solutions. The page features clear calls to action, an intuitive project gallery, and straightforward pricing options that help visitors understand the full range of services at a glance. An interactive 'Design Your Part' section streamlines the process by allowing users to upload or customize 3D models from any device, while a step-by-step overview clarifies how projects move from concept to completion. Overall, this modern landing page seamlessly combines functionality with an engaging design, reflecting the brand's commitment to high-quality, accessible 3D printing solutions.",
+        features: [
+          "Visually engaging, modern landing page design",
+          "Project gallery and clear pricing options",
+          "Interactive 'Design Your Part' section for uploads/customization",
+          "Step-by-step overview of the 3D printing process",
+          "Responsive and accessible from any device",
+          "Strong calls to action and social media integration at the end",
+        ],
+      },
+      socialMedia: true, // Placeholder to indicate social media should be displayed at the end
+    },
+
+    // 3) Social Media Application (No demo URL, so no button will show)
+  
+
+    // 4) E-Commerce Platform (Updated live URL to mmauto.ae)
     {
       title: "E-Commerce Platform",
       description: "Full-featured online shopping solution",
@@ -91,7 +128,7 @@ const Projects = () => {
       },
     },
 
-    // 3) Link Shortener (link10.de)
+    // 5) Link Shortener (link10.de)
     {
       title: "Link Shortener",
       description: "Convert long URLs into short links, manage them, and more",
@@ -113,7 +150,7 @@ const Projects = () => {
       },
     },
 
-    // 4) Syllable Highlighter (silbenschrift.de)
+    // 6) Syllable Highlighter (silbenschrift.de)
     {
       title: "Syllable Highlighter",
       description: "Convert text into colored syllabary for fun and effective learning",
@@ -134,30 +171,54 @@ const Projects = () => {
         ],
       },
     },
-
-    // 5) Highlight Keeper (Chrome Extension) + GitHub link
     {
-      title: "Highlight Keeper",
-      description: "A lightweight and intuitive Chrome extension for highlighting and organizing text",
+      title: "Social Media Application",
+      description: "A dynamic social platform with real-time features",
       images: [
-        "/assets/images/projects/highlight.JPG",
-        "/assets/images/projects/highlight2.JPG",
+        "/assets/images/projects/socialmedia.JPG",
+        "/assets/images/projects/socialmedia1.JPG",
+
+        "/assets/images/projects/socialmedia2.JPG",
+        // You can add more images here if desired
       ],
-      tech: ["JavaScript", "Chrome Extension", "LocalStorage"],
-      githubUrl: "https://github.com/Osamaislam1/highlight-keeper",
+      tech: ["Laravel", "PHP", "MySQL", "WebSockets", "Livewire"],
       details: {
         overview:
-          "Highlight Keeper is a Chrome extension to help you effortlessly highlight, save, and organize important text from any webpage. Whether you're researching, reading articles, or managing content, your key information is always at your fingertips.",
+          "Developed a feature-rich social media platform that enables users to connect, share content, and interact in real-time. The application showcases modern web development practices and scalable architecture.",
         features: [
-          "Instant text highlighting and saving",
-          "Titles and tags for better note organization",
-          "Real-time search and advanced tag filtering",
-          "Export notes as .txt files, including metadata",
-          "Local storage for offline support and privacy",
-          "Future enhancements like cloud sync and imports",
+          "User authentication with email verification",
+          "Real-time chat using WebSockets",
+          "News feed with infinite scroll",
+          "Photo and video sharing capabilities",
+          "Friend requests and following system",
+          "Real-time notifications",
+          "Responsive design for all devices",
         ],
       },
     },
+    // 7) Highlight Keeper (Chrome Extension) + GitHub link
+    // {
+    //   title: "Highlight Keeper",
+    //   description: "A lightweight and intuitive Chrome extension for highlighting and organizing text",
+    //   images: [
+    //     "/assets/images/projects/highlight.JPG",
+    //     "/assets/images/projects/highlight2.JPG",
+    //   ],
+    //   tech: ["JavaScript", "Chrome Extension", "LocalStorage"],
+    //   githubUrl: "https://github.com/Osamaislam1/highlight-keeper",
+    //   details: {
+    //     overview:
+    //       "Highlight Keeper is a Chrome extension to help you effortlessly highlight, save, and organize important text from any webpage. Whether you're researching, reading articles, or managing content, your key information is always at your fingertips.",
+    //     features: [
+    //       "Instant text highlighting and saving",
+    //       "Titles and tags for better note organization",
+    //       "Real-time search and advanced tag filtering",
+    //       "Export notes as .txt files, including metadata",
+    //       "Local storage for offline support and privacy",
+    //       "Future enhancements like cloud sync and imports",
+    //     ],
+    //   },
+    // },
   ];
 
   return (
@@ -358,6 +419,20 @@ const Projects = () => {
                       </motion.a>
                     )}
                   </div>
+
+                  {selectedProject.socialMedia && (
+                    <div className="mt-6 flex gap-4">
+                      <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 text-2xl">
+                        <i className="fab fa-facebook"></i> Facebook
+                      </a>
+                      <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600 text-2xl">
+                        <i className="fab fa-twitter"></i> Twitter
+                      </a>
+                      <a href="#" target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-700 text-2xl">
+                        <i className="fab fa-instagram"></i> Instagram
+                      </a>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </motion.div>
