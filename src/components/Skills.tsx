@@ -1,249 +1,242 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Code, Server, Wrench, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import {
+    Code, Database, Server, Globe,
+    Wrench, GitBranch, Terminal, Layers
+} from 'lucide-react';
+
+interface Skill {
+    name: string;
+    level: number;
+    icon: React.ReactNode;
+}
+
+interface SkillCategory {
+    title: string;
+    command: string;
+    skills: Skill[];
+}
 
 const Skills = () => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+    const { ref, inView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+    });
 
-  useEffect(() => {
-    if (inView) {
-      controls.start('visible');
-    }
-  }, [controls, inView]);
+    const skillCategories: SkillCategory[] = [
+        {
+            title: 'Backend',
+            command: 'ls backend/',
+            skills: [
+                { name: 'PHP', level: 95, icon: <Code className="w-4 h-4" /> },
+                { name: 'Laravel', level: 92, icon: <Layers className="w-4 h-4" /> },
+                { name: 'Python', level: 65, icon: <Terminal className="w-4 h-4" /> },
+                { name: 'REST APIs', level: 90, icon: <Server className="w-4 h-4" /> },
+            ],
+        },
+        {
+            title: 'Database',
+            command: 'ls database/',
+            skills: [
+                { name: 'MySQL', level: 92, icon: <Database className="w-4 h-4" /> },
+                { name: 'PostgreSQL', level: 78, icon: <Database className="w-4 h-4" /> },
+                { name: 'phpMyAdmin', level: 88, icon: <Database className="w-4 h-4" /> },
+            ],
+        },
+        {
+            title: 'Frontend',
+            command: 'ls frontend/',
+            skills: [
+                { name: 'JavaScript', level: 85, icon: <Code className="w-4 h-4" /> },
+                { name: 'React', level: 78, icon: <Globe className="w-4 h-4" /> },
+                { name: 'Livewire', level: 85, icon: <Layers className="w-4 h-4" /> },
+                { name: 'Inertia', level: 82, icon: <Layers className="w-4 h-4" /> },
+                { name: 'jQuery/Ajax', level: 80, icon: <Code className="w-4 h-4" /> },
+            ],
+        },
+        {
+            title: 'DevOps & Tools',
+            command: 'ls devops/',
+            skills: [
+                { name: 'Git/GitHub', level: 90, icon: <GitBranch className="w-4 h-4" /> },
+                { name: 'Linux (Ubuntu/CentOS)', level: 82, icon: <Terminal className="w-4 h-4" /> },
+                { name: 'VPS/Nginx', level: 75, icon: <Server className="w-4 h-4" /> },
+                { name: 'Postman', level: 88, icon: <Wrench className="w-4 h-4" /> },
+            ],
+        },
+    ];
 
-  const skillCategories = [
-    {
-      name: 'Frontend',
-      icon: Code,
-      color: 'from-blue-500 to-cyan-400',
-      description: 'Building responsive and interactive user interfaces',
-      skills: [
-        { name: 'HTML/CSS', level: 85, description: 'Semantic HTML and modern CSS including Flexbox, Grid, and animations' },
-        { name: 'JavaScript', level: 80, description: 'ES6+, DOM manipulation, async programming' },
-        { name: 'Vue.js', level: 70, description: 'Component architecture, state management, Vue Router' },
-        { name: 'React', level: 70, description: 'Hooks, Context API, Redux, Next.js' },
-        { name: 'Livewire', level: 85, description: 'Real-time UI updates, dynamic interfaces' },
-      ],
-    },
-    {
-      name: 'Backend',
-      icon: Server,
-      color: 'from-purple-500 to-pink-500',
-      description: 'Server-side development and database management',
-      skills: [
-        { name: 'PHP', level: 90, description: 'OOP, design patterns, modern PHP 7/8 features' },
-        { name: 'Laravel', level: 96, description: 'Full-stack framework expertise, custom solutions' },
-        { name: 'MySQL', level: 85, description: 'Database design, optimization, complex queries' },
-        { name: 'RESTful APIs', level: 85, description: 'API design, authentication, documentation' },
-      ],
-    },
-    {
-      name: 'Tools & Others',
-      icon: Wrench,
-      color: 'from-green-500 to-emerald-500',
-      description: 'Development tools and deployment technologies',
-      skills: [
-        { name: 'Git', level: 80, description: 'Version control system for tracking code changes and collaboration' },
-        { name: 'PostMan', level: 75, description: 'API development and testing tool for building and testing APIs' },
-        { name: 'Pusher', level: 70, description: 'Real-time messaging and notification service' },
-        { name: 'Linux', level: 90, description: 'Operating system and command line interface skills' },
-      ],
-    },
-  ];
+    const getSkillColor = (level: number) => {
+        if (level >= 90) return 'terminal-green';
+        if (level >= 75) return 'terminal-cyan';
+        if (level >= 60) return 'terminal-amber';
+        return 'terminal-dim';
+    };
 
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.1,
-        ease: "easeOut"
-      },
-    },
-  };
+    const getSkillLabel = (level: number) => {
+        if (level >= 90) return 'EXPERT';
+        if (level >= 75) return 'ADVANCED';
+        if (level >= 60) return 'INTERMEDIATE';
+        return 'LEARNING';
+    };
 
-  const skillVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      },
-    },
-  };
-
-  return (
-    <section id="skills" className="min-h-screen relative bg-gray-900 overflow-hidden py-20">
-      {/* Animated background with gradient */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-gradient" />
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
-            animate={{
-              x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
-              y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-              Technical Skills
-            </span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full"></div>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {skillCategories.map((category, categoryIndex) => (
+    return (
+        <section id="skills" className="min-h-screen py-20 px-4 md:px-8 lg:px-16 relative" ref={ref}>
             <motion.div
-              key={category.name}
-              variants={skillVariants}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700 hover:border-gray-600 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                initial={{ opacity: 0 }}
+                animate={inView ? { opacity: 1 } : { opacity: 0 }}
+                className="max-w-6xl mx-auto"
             >
-              <div 
-                className="cursor-pointer"
-                onClick={() => setExpandedCategory(expandedCategory === categoryIndex ? null : categoryIndex)}
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${category.color}`}>
-                      <category.icon className="w-5 h-5 text-white" />
+                {/* Terminal Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    className="mb-12"
+                >
+                    <div className="flex items-center gap-2 mb-4 font-mono text-sm">
+                        <span className="text-terminal-green">➜</span>
+                        <span className="text-terminal-cyan">~/portfolio</span>
+                        <span className="text-white">npm list --depth=0</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white">{category.name}</h3>
-                  </div>
-                  <motion.div
-                    initial={false}
-                    animate={{ rotate: expandedCategory === categoryIndex ? 180 : 0 }}
-                    transition={{ duration: 0.3, ease: "anticipate" }}
-                  >
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  </motion.div>
-                </div>
-              </div>
 
-              <AnimatePresence mode="sync">
-                {expandedCategory === categoryIndex && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ 
-                      opacity: 1, 
-                      height: 'auto',
-                      transition: {
-                        height: {
-                          duration: 0.4,
-                          ease: "easeOut"
-                        },
-                        opacity: {
-                          duration: 0.25,
-                          delay: 0.15
-                        }
-                      }
-                    }}
-                    exit={{ 
-                      opacity: 0,
-                      height: 0,
-                      transition: {
-                        height: {
-                          duration: 0.4,
-                          ease: "easeInOut"
-                        },
-                        opacity: {
-                          duration: 0.25
-                        }
-                      }
-                    }}
-                    className="text-gray-400 mb-6"
-                  >
-                    {category.description}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+                    <div className="flex items-center gap-4">
+                        <div className="h-px flex-grow bg-gradient-to-r from-terminal-green/50 to-transparent" />
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono text-terminal-green flex items-center gap-3">
+                            <span className="text-terminal-dim">{'//'}</span>
+                            TECH_STACK
+                            <span className="animate-pulse">_</span>
+                        </h2>
+                        <div className="h-px flex-grow bg-gradient-to-l from-terminal-green/50 to-transparent" />
+                    </div>
+                </motion.div>
 
-              <div className="space-y-6">
-                {category.skills.map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={inView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.5, delay: skillIndex * 0.1, ease: "easeOut" }}
-                    className="group relative"
-                    onMouseEnter={() => setHoveredSkill(`${categoryIndex}-${skillIndex}`)}
-                    onMouseLeave={() => setHoveredSkill(null)}
-                  >
-                    <div className="flex justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-300 group-hover:text-white transition-colors duration-300">
-                          {skill.name}
-                        </span>
-                        <Info className="w-4 h-4 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </div>
-                      <span className="text-blue-400">{skill.level}%</span>
-                    </div>
-                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={inView ? { width: `${skill.level}%` } : {}}
-                        transition={{ duration: 1, delay: skillIndex * 0.1, ease: "easeOut" }}
-                        className={`h-full rounded-full bg-gradient-to-r ${category.color}`}
-                      />
-                    </div>
-                    <AnimatePresence>
-                      {hoveredSkill === `${categoryIndex}-${skillIndex}` && (
+                {/* Skills Grid */}
+                <div className="grid md:grid-cols-2 gap-6">
+                    {skillCategories.map((category, catIndex) => (
                         <motion.div
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          transition={{ 
-                            duration: 0.2,
-                            ease: "easeOut"
-                          }}
-                          className="mt-2 text-sm text-gray-400 bg-gray-800/90 p-2 rounded-md backdrop-blur-sm"
+                            key={category.title}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={{ delay: catIndex * 0.15 }}
+                            className="terminal-window"
                         >
-                          {skill.description}
+                            <div className="terminal-header">
+                                <div className="terminal-btn terminal-btn-close" />
+                                <div className="terminal-btn terminal-btn-minimize" />
+                                <div className="terminal-btn terminal-btn-maximize" />
+                                <span className="ml-4 text-terminal-dim text-xs font-mono">
+                                    {category.title.toLowerCase()}_skills.sh
+                                </span>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="text-terminal-green font-mono text-sm mb-6">
+                                    $ {category.command}
+                                </div>
+
+                                <div className="space-y-5">
+                                    {category.skills.map((skill, skillIndex) => (
+                                        <motion.div
+                                            key={skill.name}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                                            transition={{ delay: catIndex * 0.15 + skillIndex * 0.1 }}
+                                        >
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-2 font-mono text-sm">
+                                                    <span className={`text-${getSkillColor(skill.level)}`}>
+                                                        {skill.icon}
+                                                    </span>
+                                                    <span className="text-slate-300">{skill.name}</span>
+                                                </div>
+                                                <div className="flex items-center gap-3 font-mono text-xs">
+                                                    <span className={`text-${getSkillColor(skill.level)}`}>
+                                                        {skill.level}%
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 rounded text-${getSkillColor(skill.level)} bg-${getSkillColor(skill.level)}/10 border border-${getSkillColor(skill.level)}/30`}>
+                                                        {getSkillLabel(skill.level)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Progress bar */}
+                                            <div className="h-2 bg-terminal-dark rounded-full overflow-hidden">
+                                                <motion.div
+                                                    className={`h-full bg-${getSkillColor(skill.level)}`}
+                                                    initial={{ width: 0 }}
+                                                    animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
+                                                    transition={{ duration: 1, delay: catIndex * 0.15 + skillIndex * 0.1 + 0.3 }}
+                                                    style={{
+                                                        boxShadow: skill.level >= 90
+                                                            ? '0 0 10px rgba(0, 255, 65, 0.5)'
+                                                            : skill.level >= 75
+                                                                ? '0 0 10px rgba(0, 217, 255, 0.5)'
+                                                                : 'none'
+                                                    }}
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
                         </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                ))}
-              </div>
+                    ))}
+                </div>
+
+                {/* Additional Skills */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-8"
+                >
+                    <div className="terminal-window">
+                        <div className="terminal-header">
+                            <div className="terminal-btn terminal-btn-close" />
+                            <div className="terminal-btn terminal-btn-minimize" />
+                            <div className="terminal-btn terminal-btn-maximize" />
+                            <span className="ml-4 text-terminal-dim text-xs font-mono">additional_skills.txt</span>
+                        </div>
+
+                        <div className="p-6">
+                            <div className="text-terminal-green font-mono text-sm mb-4">
+                                $ cat additional_skills.txt | sort
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                                {[
+                                    'OpenAI API',
+                                    'Gemini API',
+                                    'Prompt Engineering',
+                                    'OWASP Security',
+                                    'Jira',
+                                    'GitLab/Bitbucket',
+                                    'cPanel',
+                                    'Database Design',
+                                    'API Documentation',
+                                    'Payment Integration',
+                                    'Clean Code',
+                                    'Agile/Scrum',
+                                ].map((skill, index) => (
+                                    <motion.span
+                                        key={skill}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                                        transition={{ delay: 0.7 + index * 0.05 }}
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        className="px-3 py-2 bg-terminal-dark border border-terminal-green/20 rounded-lg text-terminal-green font-mono text-sm hover:border-terminal-green/50 hover:shadow-terminal transition-all cursor-default"
+                                    >
+                                        {skill}
+                                    </motion.span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default Skills;

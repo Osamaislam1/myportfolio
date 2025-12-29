@@ -1,200 +1,277 @@
-import { motion, AnimatePresence } from 'framer-motion';
+
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useState } from 'react';
-import { 
-  GraduationCap,
-  School,
-  BookOpen,
-  Award,
-  Star,
-  Calendar,
-  Sparkles,
-  Building
-} from 'lucide-react';
+import { GraduationCap, Calendar, MapPin, Award, BookOpen } from 'lucide-react';
+
+interface EducationItem {
+    id: number;
+    degree: string;
+    institution: string;
+    period: string;
+    location: string;
+    description: string;
+    achievements?: string[];
+}
 
 const Education = () => {
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+    const { ref, inView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+    });
 
-  const educationData = [
-    {
-      id: 1,
-      title: "BCA",
-      institution: "Integral University",
-      year: "July 2022",
-      grade: "CGPA: 9.07",
-      icon: GraduationCap,
-      color: "from-purple-500 to-pink-500",
-      achievements: [
-        "Outstanding Academic Performance",
-        "Computer Science Excellence", 
-        "Technical Skills Development"
-      ]
-    },
-    {
-      id: 2,
-      title: "Intermediate",
-      institution: "N.J.E School",
-      year: "2018",
-      grade: null,
-      icon: BookOpen,
-      color: "from-blue-500 to-cyan-500",
-      achievements: [
-        "Science Stream Focus",
-        "Academic Achievement",
-        "Extracurricular Activities"
-      ]
-    },
-    {
-      id: 3,
-      title: "High School",
-      institution: "N.J.E School",
-      year: "2016",
-      grade: null,
-      icon: School,
-      color: "from-green-500 to-emerald-500",
-      achievements: [
-        "Foundation Building",
-        "Academic Excellence",
-        "Core Subject Mastery"
-      ]
-    }
-  ];
+    const education: EducationItem[] = [
+        {
+            id: 1,
+            degree: 'Bachelor of Computer Application (BCA)',
+            institution: 'Integral University',
+            period: '2018 - 2022',
+            location: 'Lucknow, India',
+            description: 'Focused on software development, database management, and web technologies. CGPA: 9.07',
+            achievements: [
+                'CGPA: 9.07 - Outstanding Academic Performance',
+                'Specialized in web development technologies',
+                'Strong foundation in database management',
+            ],
+        },
+        {
+            id: 2,
+            degree: 'Intermediate',
+            institution: 'N.J.E School',
+            period: '2016 - 2018',
+            location: 'India',
+            description: 'Foundation in science and mathematics with focus on computer studies.',
+        },
+    ];
 
-  return (
-    <section id="education" className="min-h-screen relative bg-gray-900 overflow-hidden py-20">
-      {/* Animated background with gradient */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-gradient" />
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
-            animate={{
-              x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
-              y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
-      
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-              Education Journey
-            </span>
-            <motion.span
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="inline-block ml-4"
-            >
-              <Sparkles className="w-8 h-8 text-yellow-400" />
-            </motion.span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full"></div>
-        </motion.div>
+    const certifications = [
+        { name: 'SQL Basic', issuer: 'HackerRank', year: '2023' },
+        { name: 'Python Basic', issuer: 'HackerRank', year: '2022' },
+        { name: 'IBM Cyber Security Analyst', issuer: 'Coursera', year: '2022' },
+        { name: 'Google IT Automation Professional', issuer: 'Coursera', year: '2021' },
+        { name: 'Google Technical Support Fundamental', issuer: 'Coursera', year: '2021' },
+    ];
 
-        <div className="grid gap-8 md:grid-cols-3 relative">
-          {educationData.map((edu, index) => (
+    return (
+        <section id="education" className="min-h-screen py-20 px-4 md:px-8 lg:px-16 relative" ref={ref}>
             <motion.div
-              key={edu.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              className="relative"
+                initial={{ opacity: 0 }}
+                animate={inView ? { opacity: 1 } : { opacity: 0 }}
+                className="max-w-6xl mx-auto"
             >
-              <motion.div
-                className={`p-6 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700/50
-                  transform transition-all duration-300 hover:shadow-xl cursor-pointer
-                  ${selectedCard === edu.id ? 'ring-2 ring-blue-400' : ''}`}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => setSelectedCard(selectedCard === edu.id ? null : edu.id)}
-              >
-                {/* Top Gradient Bar */}
-                <div className={`h-2 w-full bg-gradient-to-r ${edu.color} rounded-full mb-6`}></div>
-
-                <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-lg bg-gradient-to-br ${edu.color}`}>
-                    <edu.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-2">{edu.title}</h3>
-                    <p className="text-gray-300 flex items-center gap-2">
-                      <Building className="w-4 h-4" />
-                      {edu.institution}
-                    </p>
-                    <p className="text-gray-300 flex items-center gap-2 mt-1">
-                      <Calendar className="w-4 h-4" />
-                      {edu.year}
-                    </p>
-                    {edu.grade && (
-                      <p className="text-gray-300 flex items-center gap-2 mt-1">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        {edu.grade}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <AnimatePresence>
-                  {selectedCard === edu.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mt-4 pt-4 border-t border-gray-700"
-                    >
-                      <h4 className="text-sm font-semibold text-gray-300 mb-2">Key Achievements:</h4>
-                      <ul className="space-y-2">
-                        {edu.achievements.map((achievement, i) => (
-                          <motion.li
-                            key={i}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex items-center gap-2 text-sm text-gray-300"
-                          >
-                            <Award className="w-4 h-4 text-yellow-400" />
-                            {achievement}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-              
-              {/* Connecting Lines */}
-              {index < educationData.length - 1 && (
+                {/* Terminal Header */}
                 <motion.div
-                  className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-blue-500/50 to-purple-500/50"
-                  initial={{ scaleX: 0 }}
-                  animate={inView ? { scaleX: 1 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                />
-              )}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    className="mb-12"
+                >
+                    <div className="flex items-center gap-2 mb-4 font-mono text-sm">
+                        <span className="text-terminal-green">➜</span>
+                        <span className="text-terminal-cyan">~/portfolio</span>
+                        <span className="text-white">cat education.md</span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <div className="h-px flex-grow bg-gradient-to-r from-terminal-green/50 to-transparent" />
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono text-terminal-green flex items-center gap-3">
+                            <span className="text-terminal-dim">{'//'}</span>
+                            EDUCATION
+                            <span className="animate-pulse">_</span>
+                        </h2>
+                        <div className="h-px flex-grow bg-gradient-to-l from-terminal-green/50 to-transparent" />
+                    </div>
+                </motion.div>
+
+                <div className="grid lg:grid-cols-2 gap-8">
+                    {/* Education Timeline */}
+                    <div className="space-y-6">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                            className="text-terminal-amber font-mono text-sm mb-4"
+                        >
+                            ## Academic Background
+                        </motion.div>
+
+                        {education.map((edu, index) => (
+                            <motion.div
+                                key={edu.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                                transition={{ delay: index * 0.2 }}
+                                className="terminal-window"
+                            >
+                                <div className="terminal-header">
+                                    <div className="terminal-btn terminal-btn-close" />
+                                    <div className="terminal-btn terminal-btn-minimize" />
+                                    <div className="terminal-btn terminal-btn-maximize" />
+                                    <span className="ml-4 text-terminal-dim text-xs font-mono">degree_{edu.id}.json</span>
+                                </div>
+
+                                <div className="p-6">
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-3 bg-terminal-green/10 rounded-lg border border-terminal-green/30">
+                                            <GraduationCap className="w-6 h-6 text-terminal-green" />
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <h3 className="text-lg font-bold text-terminal-green font-mono mb-1">
+                                                {edu.degree}
+                                            </h3>
+                                            <p className="text-terminal-cyan font-mono text-sm mb-3">
+                                                @ {edu.institution}
+                                            </p>
+
+                                            <div className="flex flex-wrap gap-4 text-sm font-mono text-terminal-dim mb-4">
+                                                <span className="flex items-center gap-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    {edu.period}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <MapPin className="w-4 h-4" />
+                                                    {edu.location}
+                                                </span>
+                                            </div>
+
+                                            <p className="text-slate-400 text-sm mb-4 font-mono">
+                                                <span className="text-terminal-dim">// </span>{edu.description}
+                                            </p>
+
+                                            {edu.achievements && (
+                                                <div className="space-y-2">
+                                                    <span className="text-terminal-amber text-xs font-mono">achievements: [</span>
+                                                    {edu.achievements.map((achievement, i) => (
+                                                        <div key={i} className="flex items-center gap-2 pl-4 text-sm font-mono">
+                                                            <Award className="w-3 h-3 text-terminal-amber" />
+                                                            <span className="text-slate-300">"{achievement}"</span>
+                                                            {i < edu.achievements!.length - 1 && <span className="text-terminal-dim">,</span>}
+                                                        </div>
+                                                    ))}
+                                                    <span className="text-terminal-amber text-xs font-mono">]</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    {/* Certifications */}
+                    <div>
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                            className="text-terminal-amber font-mono text-sm mb-4"
+                        >
+                            ## Certifications & Courses
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={{ delay: 0.3 }}
+                            className="terminal-window h-fit"
+                        >
+                            <div className="terminal-header">
+                                <div className="terminal-btn terminal-btn-close" />
+                                <div className="terminal-btn terminal-btn-minimize" />
+                                <div className="terminal-btn terminal-btn-maximize" />
+                                <span className="ml-4 text-terminal-dim text-xs font-mono">certifications.log</span>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="text-terminal-green font-mono text-sm mb-4">
+                                    $ cat certifications.log | grep --color "verified"
+                                </div>
+
+                                <div className="space-y-4">
+                                    {certifications.map((cert, index) => (
+                                        <motion.div
+                                            key={cert.name}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+                                            transition={{ delay: 0.4 + index * 0.1 }}
+                                            className="group flex items-center gap-4 p-3 rounded-lg bg-terminal-dark/50 border border-terminal-green/20 hover:border-terminal-green/40 transition-all"
+                                        >
+                                            <div className="p-2 bg-terminal-green/10 rounded-lg">
+                                                <BookOpen className="w-4 h-4 text-terminal-green" />
+                                            </div>
+
+                                            <div className="flex-1">
+                                                <h4 className="text-terminal-green font-mono text-sm group-hover:glow-text-sm transition-all">
+                                                    {cert.name}
+                                                </h4>
+                                                <p className="text-terminal-dim text-xs font-mono">
+                                                    {cert.issuer} • {cert.year}
+                                                </p>
+                                            </div>
+
+                                            <span className="text-terminal-green text-xs font-mono px-2 py-1 bg-terminal-green/10 rounded">
+                                                ✓ VERIFIED
+                                            </span>
+                                        </motion.div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-6 pt-4 border-t border-terminal-green/20">
+                                    <p className="text-terminal-dim font-mono text-xs">
+                                        <span className="text-terminal-green">INFO:</span> Continuously learning and updating skills
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Learning Progress */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={{ delay: 0.5 }}
+                            className="terminal-window mt-6"
+                        >
+                            <div className="terminal-header">
+                                <div className="terminal-btn terminal-btn-close" />
+                                <div className="terminal-btn terminal-btn-minimize" />
+                                <div className="terminal-btn terminal-btn-maximize" />
+                                <span className="ml-4 text-terminal-dim text-xs font-mono">currently_learning.sh</span>
+                            </div>
+
+                            <div className="p-6 font-mono text-sm">
+                                <div className="text-terminal-green mb-4">$ ./currently_learning.sh</div>
+
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-slate-300">Docker & Kubernetes</span>
+                                        <span className="text-terminal-amber">IN_PROGRESS</span>
+                                    </div>
+                                    <div className="h-2 bg-terminal-dark rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-gradient-to-r from-terminal-green to-terminal-cyan"
+                                            initial={{ width: 0 }}
+                                            animate={inView ? { width: '65%' } : { width: 0 }}
+                                            transition={{ duration: 1, delay: 0.8 }}
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-4">
+                                        <span className="text-slate-300">AWS Cloud Services</span>
+                                        <span className="text-terminal-amber">IN_PROGRESS</span>
+                                    </div>
+                                    <div className="h-2 bg-terminal-dark rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-gradient-to-r from-terminal-green to-terminal-cyan"
+                                            initial={{ width: 0 }}
+                                            animate={inView ? { width: '45%' } : { width: 0 }}
+                                            transition={{ duration: 1, delay: 1 }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
             </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default Education;

@@ -1,153 +1,251 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Terminal, Code, Briefcase, Mail, ExternalLink, Github, Linkedin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ChevronDown, Code, Mail, Github, Linkedin, ArrowRight } from 'lucide-react';
+import GlitchText from './effects/GlitchText';
 
 const Hero = () => {
-  const [isHovered, setIsHovered] = useState(false);
+    const [typedText, setTypedText] = useState('');
+    const [showCursor, setShowCursor] = useState(true);
+    const [commandIndex, setCommandIndex] = useState(0);
 
-  const skills = [
-    "PHP", "Laravel", "MySQL", "JavaScript", "React"
-  ];
+    const fullText = "PHP / Laravel Developer";
+    const commands = [
+        { prompt: '$ whoami', output: 'Osama Islam' },
+        { prompt: '$ cat skills.txt', output: 'PHP • Laravel • MySQL • React • Inertia • Livewire' },
+        { prompt: '$ echo $EXPERIENCE', output: '3+ Years Building ERPs, CRMs & E-commerce' },
+    ];
 
-  return (
-    <section id="home" className="h-screen flex items-center justify-center relative bg-gray-900 overflow-hidden">
-      {/* Animated background with interactive particles */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-gradient" />
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
-            animate={{
-              x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
-              y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
+    // Typing effect for role
+    useEffect(() => {
+        let index = 0;
+        const timer = setInterval(() => {
+            if (index <= fullText.length) {
+                setTypedText(fullText.slice(0, index));
+                index++;
+            } else {
+                clearInterval(timer);
+            }
+        }, 100);
 
-      <div className="relative z-10 text-center px-4 max-w-5xl">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="mb-8 relative"
-        >
-          <div className="relative">
-            <Terminal className="w-20 h-20 text-blue-500 mx-auto" />
+        return () => clearInterval(timer);
+    }, []);
+
+    // Blinking cursor
+    useEffect(() => {
+        const cursorTimer = setInterval(() => {
+            setShowCursor(prev => !prev);
+        }, 500);
+
+        return () => clearInterval(cursorTimer);
+    }, []);
+
+    // Cycle through commands
+    useEffect(() => {
+        const commandTimer = setInterval(() => {
+            setCommandIndex(prev => (prev + 1) % commands.length);
+        }, 3000);
+
+        return () => clearInterval(commandTimer);
+    }, []);
+
+    const skills = ["PHP", "Laravel", "MySQL", "React", "Inertia", "Livewire"];
+
+    return (
+        <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 md:pt-20 pb-24">
+            {/* Radial gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-radial from-terminal-green/5 via-transparent to-transparent" />
+
+            <div className="relative z-10 text-center px-4 max-w-5xl">
+                {/* Terminal Status Badge */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-8"
+                >
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-dark border border-terminal-green/30 rounded-lg text-terminal-green text-sm font-mono shadow-terminal">
+                        <span className="w-2 h-2 bg-terminal-green rounded-full animate-pulse shadow-terminal" />
+                        <span className="text-terminal-dim">status:</span>
+                        <span>AVAILABLE_FOR_OPPORTUNITIES</span>
+                    </span>
+                </motion.div>
+
+                {/* Main Heading with Glitch Effect */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="mb-6"
+                >
+                    <div className="text-terminal-dim font-mono text-lg mb-2">
+                        <span className="text-terminal-green">$</span> ./introduce.sh
+                    </div>
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
+                        <GlitchText
+                            text="Osama Islam"
+                            className="text-terminal-green glow-text"
+                            as="span"
+                        />
+                    </h1>
+                </motion.div>
+
+                {/* Typing Role */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="mb-8"
+                >
+                    <div className="text-lg sm:text-xl md:text-2xl font-mono">
+                        <span className="text-terminal-cyan">&gt;</span>
+                        <span className="text-terminal-green ml-2">{typedText}</span>
+                        <span className={`text-terminal-green ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
+                    </div>
+                    <p className="text-terminal-dim mt-4 max-w-2xl mx-auto text-sm sm:text-base md:text-lg font-mono px-2">
+                        <span className="text-terminal-amber">/*</span> Building secure, scalable, and high-performance web applications.
+                        Expert in backend architecture, RESTful APIs, and MySQL optimization. Delivering ERPs, CRMs & e-commerce platforms. <span className="text-terminal-amber">*/</span>
+                    </p>
+                </motion.div>
+
+                {/* Animated Terminal Output */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="mb-10 max-w-lg mx-auto"
+                >
+                    <div className="terminal-window">
+                        <div className="terminal-header">
+                            <div className="terminal-btn terminal-btn-close" />
+                            <div className="terminal-btn terminal-btn-minimize" />
+                            <div className="terminal-btn terminal-btn-maximize" />
+                            <span className="ml-4 text-terminal-dim text-xs font-mono">osama@portfolio:~</span>
+                        </div>
+                        <div className="p-4 font-mono text-sm text-left">
+                            <motion.div
+                                key={commandIndex}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className="text-terminal-green mb-1">
+                                    {commands[commandIndex].prompt}
+                                </div>
+                                <div className="text-slate-300 pl-4">
+                                    {commands[commandIndex].output}
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Skills Tags */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="flex flex-wrap justify-center gap-3 mb-10"
+                >
+                    {skills.map((skill, index) => (
+                        <motion.span
+                            key={skill}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.5 + index * 0.05 }}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            className="px-4 py-2 bg-terminal-dark/80 rounded-lg text-terminal-green text-sm font-mono border border-terminal-green/30 hover:border-terminal-green/60 hover:shadow-terminal transition-all duration-200"
+                        >
+                            <span className="text-terminal-dim mr-1">#</span>
+                            {skill}
+                        </motion.span>
+                    ))}
+                </motion.div>
+
+                {/* CTA Buttons */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
+                >
+                    <motion.a
+                        href="#projects"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group px-8 py-3 bg-terminal-green text-terminal-dark rounded-lg font-bold font-mono flex items-center gap-2 transition-all duration-200 shadow-terminal hover:shadow-terminal-lg"
+                    >
+                        <Code className="w-5 h-5" />
+                        <span>./view_projects.sh</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </motion.a>
+                    <motion.a
+                        href="#contact"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group px-8 py-3 bg-terminal-dark border border-terminal-green/50 text-terminal-green rounded-lg font-medium font-mono flex items-center gap-2 transition-all duration-200 hover:border-terminal-green hover:shadow-terminal"
+                    >
+                        <Mail className="w-5 h-5" />
+                        <span>ssh connect@osama</span>
+                    </motion.a>
+                </motion.div>
+
+                {/* Social Links */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="flex justify-center gap-4"
+                >
+                    <motion.a
+                        href="https://github.com/Osamaislam1"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, y: -3 }}
+                        className="p-3 bg-terminal-dark/50 rounded-lg text-terminal-dim hover:text-terminal-green border border-terminal-green/20 hover:border-terminal-green/50 transition-all duration-200 hover:shadow-terminal"
+                    >
+                        <Github className="w-5 h-5" />
+                    </motion.a>
+                    <motion.a
+                        href="https://linkedin.com/in/osama-islam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, y: -3 }}
+                        className="p-3 bg-terminal-dark/50 rounded-lg text-terminal-dim hover:text-terminal-cyan border border-terminal-green/20 hover:border-terminal-cyan/50 transition-all duration-200"
+                    >
+                        <Linkedin className="w-5 h-5" />
+                    </motion.a>
+                </motion.div>
+            </div>
+
+            {/* Scroll Indicator */}
             <motion.div
-              className="absolute inset-0"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                className="absolute bottom-20 left-1/2 transform -translate-x-1/2 cursor-pointer"
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
             >
-              <div className="w-full h-full rounded-full border-2 border-blue-500/30 border-dashed" />
+                <div className="flex flex-col items-center gap-2">
+                    <span className="text-terminal-dim text-xs font-mono">scroll_down</span>
+                    <ChevronDown className="text-terminal-green w-6 h-6 animate-pulse" />
+                </div>
             </motion.div>
-          </div>
-        </motion.div>
 
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-6xl md:text-8xl font-bold text-white mb-6"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:via-purple-500 hover:to-blue-500 transition-all duration-500">
-            Osama Islam
-          </span>
-        </motion.h1>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-6"
-        >
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {skills.map((skill, index) => (
-              <motion.span
-                key={skill}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="px-4 py-2 bg-gray-800/50 rounded-full text-gray-300 text-sm backdrop-blur-sm border border-gray-700/50"
-              >
-                {skill}
-              </motion.span>
-            ))}
-          </div>
-
-          <p className="text-2xl md:text-3xl text-gray-300 mb-8 font-light">
-            <span className="text-blue-400 font-normal">Full Stack Developer</span> with expertise in{" "}
-            <span className="text-purple-400 font-normal">Laravel</span> and{" "}
-            <span className="text-purple-400 font-normal">PHP</span>
-          </p>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            <div className="flex gap-4">
-              <motion.a 
-                href="#projects"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full font-medium flex items-center gap-2 group"
-              >
-                <Code className="w-5 h-5" />
-                View Projects
-                <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </motion.a>
-              <motion.a 
-                href="#contact"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-gray-800 text-white rounded-full font-medium flex items-center gap-2 group hover:bg-gray-700"
-              >
-                <Mail className="w-5 h-5" />
-                Contact
-                <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </motion.a>
+            {/* Corner decorations */}
+            <div className="absolute top-8 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
+                <div>{"<portfolio>"}</div>
             </div>
-
-            <div className="flex gap-4">
-              <motion.a
-                href="https://github.com/Osamaislam1"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                className="p-2 bg-gray-800 rounded-full text-gray-400 hover:text-white hover:bg-gray-700"
-              >
-                <Github className="w-6 h-6" />
-              </motion.a>
-              <motion.a
-                href="https://linkedin.com/in/yourusername"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: -5 }}
-                className="p-2 bg-gray-800 rounded-full text-gray-400 hover:text-white hover:bg-gray-700"
-              >
-                <Linkedin className="w-6 h-6" />
-              </motion.a>
+            <div className="absolute top-8 right-8 text-terminal-green/20 font-mono text-xs hidden md:block">
+                <div>v1.0.0</div>
             </div>
-          </div>
-        </motion.div>
-      </div>
-
-      <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-        whileHover={{ scale: 1.2 }}
-        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-      >
-        <ChevronDown className="text-white/50 w-8 h-8 hover:text-white/80 transition-colors" />
-      </motion.div>
-    </section>
-  );
+            <div className="absolute bottom-20 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
+                <div>line: 001</div>
+            </div>
+            <div className="absolute bottom-20 right-20 text-terminal-green/20 font-mono text-xs hidden md:block">
+                <div>{"</portfolio>"}</div>
+            </div>
+        </section>
+    );
 };
 
 export default Hero;

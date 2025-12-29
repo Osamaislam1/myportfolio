@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Home, User, Briefcase, Code, 
-  Cpu, Mail, Menu, X, Github, 
-  Linkedin, ChevronLeft, ChevronRight ,GraduationCap
+import {
+  Home, User, Briefcase, Code,
+  Cpu, Mail, Menu, X, Github,
+  Linkedin, ChevronLeft, ChevronRight, GraduationCap
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -17,7 +17,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { icon: Code, label: 'Projects', href: '#projects' },
     { icon: GraduationCap, label: 'Education', href: '#education' },
     { icon: Cpu, label: 'Skills', href: '#skills' },
-    // { icon: User, label: 'Reviews', href: '#reviews' },
     { icon: Mail, label: 'Contact', href: '#contact' },
   ];
 
@@ -54,22 +53,22 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         onClick={() => setIsMobileOpen(!isMobileOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed top-4 right-4 z-50 p-2 bg-gradient-to-r from-blue-600/80 to-purple-600/80 rounded-full md:hidden backdrop-blur-sm shadow-lg hover:from-blue-700/80 hover:to-purple-700/80 transition-all duration-300"
+        className="fixed top-4 right-4 z-50 p-3 bg-slate-800 rounded-lg md:hidden border border-slate-700 shadow-lg"
       >
         {isMobileOpen ? (
-          <X className="text-white w-6 h-6" />
+          <X className="text-slate-200 w-5 h-5" />
         ) : (
-          <Menu className="text-white w-6 h-6" />
+          <Menu className="text-slate-200 w-5 h-5" />
         )}
       </motion.button>
 
       {/* Desktop Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ 
+        animate={{
           width: isOpen ? '16rem' : '5rem',
         }}
-        className="fixed left-0 top-0 h-full bg-gray-900/80 backdrop-blur-md text-white z-40 hidden md:block border-r border-gray-700/50 shadow-lg"
+        className="fixed left-0 top-0 h-full bg-slate-900 text-white z-40 hidden md:block border-r border-slate-800"
       >
         <div className="flex flex-col h-full relative">
           {/* Toggle Button */}
@@ -77,51 +76,49 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             onClick={() => setIsOpen(!isOpen)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="absolute -right-5 top-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full p-1.5 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg"
+            className="absolute -right-3 top-20 bg-slate-800 border border-slate-700 rounded-full p-1.5 hover:bg-slate-700 transition-colors duration-200 shadow-lg"
           >
             {isOpen ? (
-              <ChevronLeft className="w-4 h-4 text-white" />
+              <ChevronLeft className="w-4 h-4 text-slate-300" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-white" />
+              <ChevronRight className="w-4 h-4 text-slate-300" />
             )}
           </motion.button>
 
           {/* Logo */}
-          <div className="p-4 text-center border-b border-gray-800/50 backdrop-blur-sm">
+          <div className="p-4 text-center border-b border-slate-800">
             <motion.div
-              whileHover={{ scale: 1.1 }}
-              className="w-12 h-12 mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              className="w-12 h-12 mx-auto bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center cursor-pointer"
             >
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">OI</span>
+              <span className="text-lg font-bold text-emerald-400">OI</span>
             </motion.div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-2 py-4 overflow-y-auto">
-            <ul className="space-y-2">
+          <nav className="flex-1 px-3 py-4 overflow-y-auto">
+            <ul className="space-y-1">
               {navItems.map((item) => {
                 const isActive = activeSection === item.href.substring(1);
                 return (
                   <li key={item.href}>
                     <motion.a
                       href={item.href}
-                      whileHover={{ scale: 1.02 }}
-                      className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
-                        isActive 
-                          ? 'bg-gradient-to-r from-blue-600/40 to-purple-600/40 text-white' 
-                          : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20'
-                      }`}
+                      whileHover={{ x: 2 }}
+                      className={`flex items-center px-3 py-3 rounded-lg transition-all duration-200 group ${isActive
+                          ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-500'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                        }`}
                     >
-                      <item.icon className={`w-5 h-5 min-w-[1.25rem] transition-colors ${
-                        isActive ? 'text-blue-400' : 'group-hover:text-blue-400'
-                      }`} />
+                      <item.icon className={`w-5 h-5 min-w-[1.25rem] ${isActive ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'
+                        }`} />
                       <motion.span
                         initial={false}
-                        animate={{ 
+                        animate={{
                           opacity: isOpen ? 1 : 0,
                           width: isOpen ? 'auto' : 0
                         }}
-                        className="ml-4 whitespace-nowrap overflow-hidden"
+                        className="ml-3 whitespace-nowrap overflow-hidden font-medium"
                       >
                         {item.label}
                       </motion.span>
@@ -133,16 +130,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </nav>
 
           {/* Social Links */}
-          <div className="p-4 border-t border-gray-800/50 backdrop-blur-sm">
-            <div className="flex justify-center space-x-4">
+          <div className="p-4 border-t border-slate-800">
+            <div className="flex justify-center space-x-3">
               {socialLinks.map((link) => (
                 <motion.a
                   key={link.href}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  className="p-2 text-gray-300 hover:text-white transition-colors duration-200 hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 rounded-full backdrop-blur-sm"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  className="p-2 text-slate-500 hover:text-slate-300 transition-colors duration-200"
                 >
                   <link.icon className="w-5 h-5" />
                 </motion.a>
@@ -161,39 +158,37 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed left-0 top-0 h-full w-64 bg-gray-900/90 backdrop-blur-md text-white z-40 md:hidden border-r border-gray-700/50"
+              className="fixed left-0 top-0 h-full w-64 bg-slate-900 text-white z-40 md:hidden border-r border-slate-800"
             >
               <div className="flex flex-col h-full">
                 {/* Logo */}
-                <div className="p-4 text-center border-b border-gray-800/50">
+                <div className="p-4 text-center border-b border-slate-800">
                   <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    className="w-12 h-12 mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+                    whileHover={{ scale: 1.05 }}
+                    className="w-12 h-12 mx-auto bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center cursor-pointer"
                   >
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">OI</span>
+                    <span className="text-lg font-bold text-emerald-400">OI</span>
                   </motion.div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-2 py-4 overflow-y-auto">
-                  <ul className="space-y-2">
+                <nav className="flex-1 px-3 py-4 overflow-y-auto">
+                  <ul className="space-y-1">
                     {navItems.map((item) => {
                       const isActive = activeSection === item.href.substring(1);
                       return (
-                        <motion.li key={item.href} whileHover={{ scale: 1.02 }}>
+                        <motion.li key={item.href} whileHover={{ x: 2 }}>
                           <a
                             href={item.href}
                             onClick={() => setIsMobileOpen(false)}
-                            className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
-                              isActive 
-                                ? 'bg-gradient-to-r from-blue-600/40 to-purple-600/40 text-white' 
-                                : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20'
-                            }`}
+                            className={`flex items-center px-3 py-3 rounded-lg transition-all duration-200 group ${isActive
+                                ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-500'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                              }`}
                           >
-                            <item.icon className={`w-5 h-5 min-w-[1.25rem] transition-colors ${
-                              isActive ? 'text-blue-400' : 'group-hover:text-blue-400'
-                            }`} />
-                            <span className="ml-4 whitespace-nowrap">{item.label}</span>
+                            <item.icon className={`w-5 h-5 min-w-[1.25rem] ${isActive ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'
+                              }`} />
+                            <span className="ml-3 whitespace-nowrap font-medium">{item.label}</span>
                           </a>
                         </motion.li>
                       );
@@ -202,16 +197,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 </nav>
 
                 {/* Social Links */}
-                <div className="p-4 border-t border-gray-800/50">
-                  <div className="flex justify-center space-x-4">
+                <div className="p-4 border-t border-slate-800">
+                  <div className="flex justify-center space-x-3">
                     {socialLinks.map((link) => (
                       <motion.a
                         key={link.href}
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        whileHover={{ scale: 1.2, rotate: 5 }}
-                        className="p-2 text-gray-300 hover:text-white transition-colors duration-200 hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 rounded-full backdrop-blur-sm"
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        className="p-2 text-slate-500 hover:text-slate-300 transition-colors duration-200"
                       >
                         <link.icon className="w-5 h-5" />
                       </motion.a>
@@ -222,11 +217,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </motion.aside>
 
             {/* Mobile Overlay */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
               onClick={() => setIsMobileOpen(false)}
             />
           </>
