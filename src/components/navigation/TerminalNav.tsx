@@ -145,87 +145,96 @@ const TerminalNav: React.FC<TerminalNavProps> = ({ currentSection, onNavigate })
                             onClick={() => setIsOpen(false)}
                         />
 
-                        {/* Terminal Window */}
+                        {/* Terminal Window Container - using flexbox for centering */}
                         <motion.div
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            transition={{ type: 'spring', damping: 25 }}
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
                         >
-                            {/* Terminal Header */}
-                            <div className="bg-terminal-dark border-2 border-terminal-green rounded-t-lg p-3 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setIsOpen(false)}
-                                            className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors"
-                                        />
-                                        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                                        <div className="w-3 h-3 rounded-full bg-green-500" />
+                            <motion.div
+                                className="w-full max-w-2xl"
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                transition={{ type: 'spring', damping: 25 }}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {/* Terminal Header */}
+                                <div className="bg-terminal-dark border-2 border-terminal-green rounded-t-lg p-3 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setIsOpen(false)}
+                                                className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors"
+                                            />
+                                            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                                            <div className="w-3 h-3 rounded-full bg-green-500" />
+                                        </div>
+                                        <span className="ml-2 md:ml-4 text-terminal-dim font-mono text-xs md:text-sm truncate">osama@portfolio:~</span>
                                     </div>
-                                    <span className="ml-4 text-terminal-dim font-mono text-sm">osama@portfolio:~</span>
-                                </div>
-                                <button onClick={() => setIsOpen(false)} className="text-terminal-dim hover:text-terminal-green transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            {/* Terminal Body */}
-                            <div className="bg-black/95 border-2 border-t-0 border-terminal-green rounded-b-lg p-4 font-mono text-sm min-h-[300px] max-h-[400px] overflow-auto">
-                                {/* Welcome message */}
-                                <div className="text-terminal-green mb-4">
-                                    <p>Welcome to Osama's Portfolio Terminal v1.0.0</p>
-                                    <p className="text-terminal-dim">Type 'help' for available commands or click below:</p>
+                                    <button onClick={() => setIsOpen(false)} className="text-terminal-dim hover:text-terminal-green transition-colors">
+                                        <X className="w-4 h-4" />
+                                    </button>
                                 </div>
 
-                                {/* Quick command buttons */}
-                                <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-terminal-green/20">
-                                    {navItems.map((item) => (
-                                        <button
-                                            key={item.id}
-                                            onClick={() => handleCommand(item.command)}
-                                            className={`px-3 py-1.5 rounded border font-mono text-xs transition-all duration-200 flex items-center gap-2 ${currentSection === item.id
-                                                ? 'bg-terminal-green/20 border-terminal-green text-terminal-green'
-                                                : 'bg-terminal-dark border-terminal-dim/50 text-terminal-dim hover:border-terminal-green hover:text-terminal-green'
-                                                }`}
-                                        >
-                                            {item.icon}
-                                            {item.command}
-                                        </button>
+                                {/* Terminal Body */}
+                                <div className="bg-black/95 border-2 border-t-0 border-terminal-green rounded-b-lg p-3 md:p-4 font-mono text-xs md:text-sm min-h-[250px] max-h-[60vh] overflow-auto">
+                                    {/* Welcome message */}
+                                    <div className="text-terminal-green mb-4">
+                                        <p>Welcome to Osama's Portfolio Terminal v1.0.0</p>
+                                        <p className="text-terminal-dim">Type 'help' for available commands or click below:</p>
+                                    </div>
+
+                                    {/* Quick command buttons */}
+                                    <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-terminal-green/20">
+                                        {navItems.map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => handleCommand(item.command)}
+                                                className={`px-3 py-1.5 rounded border font-mono text-xs transition-all duration-200 flex items-center gap-2 ${currentSection === item.id
+                                                    ? 'bg-terminal-green/20 border-terminal-green text-terminal-green'
+                                                    : 'bg-terminal-dark border-terminal-dim/50 text-terminal-dim hover:border-terminal-green hover:text-terminal-green'
+                                                    }`}
+                                            >
+                                                {item.icon}
+                                                {item.command}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Command history */}
+                                    {commandHistory.map((cmd, index) => (
+                                        <div key={index} className="mb-1">
+                                            <span className="text-terminal-green">➜</span>
+                                            <span className="text-terminal-cyan ml-2">~</span>
+                                            <span className="text-white ml-2">{cmd}</span>
+                                        </div>
                                     ))}
-                                </div>
 
-                                {/* Command history */}
-                                {commandHistory.map((cmd, index) => (
-                                    <div key={index} className="mb-1">
+                                    {/* Output */}
+                                    {showOutput && (
+                                        <div className="text-terminal-amber mb-2 animate-pulse">{showOutput}</div>
+                                    )}
+
+                                    {/* Current input line */}
+                                    <div className="flex items-center">
                                         <span className="text-terminal-green">➜</span>
                                         <span className="text-terminal-cyan ml-2">~</span>
-                                        <span className="text-white ml-2">{cmd}</span>
+                                        <input
+                                            ref={inputRef}
+                                            type="text"
+                                            value={currentCommand}
+                                            onChange={(e) => setCurrentCommand(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                            className="flex-1 bg-transparent border-none outline-none text-white ml-2 font-mono caret-terminal-green"
+                                            placeholder="Type a command..."
+                                            autoFocus
+                                        />
                                     </div>
-                                ))}
-
-                                {/* Output */}
-                                {showOutput && (
-                                    <div className="text-terminal-amber mb-2 animate-pulse">{showOutput}</div>
-                                )}
-
-                                {/* Current input line */}
-                                <div className="flex items-center">
-                                    <span className="text-terminal-green">➜</span>
-                                    <span className="text-terminal-cyan ml-2">~</span>
-                                    <input
-                                        ref={inputRef}
-                                        type="text"
-                                        value={currentCommand}
-                                        onChange={(e) => setCurrentCommand(e.target.value)}
-                                        onKeyDown={handleKeyDown}
-                                        className="flex-1 bg-transparent border-none outline-none text-white ml-2 font-mono caret-terminal-green"
-                                        placeholder="Type a command..."
-                                        autoFocus
-                                    />
                                 </div>
-                            </div>
+                            </motion.div>
                         </motion.div>
                     </>
                 )}
@@ -235,3 +244,4 @@ const TerminalNav: React.FC<TerminalNavProps> = ({ currentSection, onNavigate })
 };
 
 export default TerminalNav;
+

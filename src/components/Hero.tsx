@@ -195,7 +195,7 @@ const Hero = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex justify-center gap-4"
+                    className="flex justify-center gap-4 mb-12"
                 >
                     <motion.a
                         href="https://github.com/Osamaislam1"
@@ -216,20 +216,25 @@ const Hero = () => {
                         <Linkedin className="w-5 h-5" />
                     </motion.a>
                 </motion.div>
-            </div>
 
-            {/* Scroll Indicator */}
-            <motion.div
-                className="absolute bottom-20 left-1/2 transform -translate-x-1/2 cursor-pointer"
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-            >
-                <div className="flex flex-col items-center gap-2">
-                    <span className="text-terminal-dim text-xs font-mono">scroll_down</span>
-                    <ChevronDown className="text-terminal-green w-6 h-6 animate-pulse" />
-                </div>
-            </motion.div>
+                {/* Scroll Indicator - now in content flow */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className="flex flex-col items-center gap-2 cursor-pointer mt-8"
+                    onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                >
+                    <motion.div
+                        animate={{ y: [0, 8, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        className="flex flex-col items-center gap-2"
+                    >
+                        <span className="text-terminal-dim text-xs font-mono">scroll_down</span>
+                        <ChevronDown className="text-terminal-green w-6 h-6 animate-pulse" />
+                    </motion.div>
+                </motion.div>
+            </div>
 
             {/* Corner decorations */}
             <div className="absolute top-8 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
@@ -238,10 +243,10 @@ const Hero = () => {
             <div className="absolute top-8 right-8 text-terminal-green/20 font-mono text-xs hidden md:block">
                 <div>v1.0.0</div>
             </div>
-            <div className="absolute bottom-20 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
+            <div className="absolute bottom-8 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
                 <div>line: 001</div>
             </div>
-            <div className="absolute bottom-20 right-20 text-terminal-green/20 font-mono text-xs hidden md:block">
+            <div className="absolute bottom-8 right-20 text-terminal-green/20 font-mono text-xs hidden md:block">
                 <div>{"</portfolio>"}</div>
             </div>
         </section>
@@ -249,3 +254,5 @@ const Hero = () => {
 };
 
 export default Hero;
+
+
