@@ -24,7 +24,7 @@ const Education = () => {
             id: 1,
             degree: 'Bachelor of Computer Application (BCA)',
             institution: 'Integral University',
-            period: '2018 - 2022',
+            period: '2019 - 2022',
             location: 'Lucknow, India',
             description: 'Focused on software development, database management, and web technologies. CGPA: 9.07',
             achievements: [
@@ -37,7 +37,7 @@ const Education = () => {
             id: 2,
             degree: 'Intermediate',
             institution: 'N.J.E School',
-            period: '2016 - 2018',
+            period: '2018',
             location: 'India',
             description: 'Foundation in science and mathematics with focus on computer studies.',
         },
