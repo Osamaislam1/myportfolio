@@ -1,0 +1,56 @@
+export const profile = {
+  name: 'Osama Islam',
+  role: 'PHP / Laravel Developer',
+  greeting: "Hey, I'm Osama Islam",
+  heroHeadline: ['I BUILD WEB', 'SYSTEMS THAT', 'SCALE.'],
+  specialties: ['ERPs', 'CRMs', 'E-commerce', 'SaaS platforms', 'REST APIs'],
+  tagline:
+    'From bulletproof Laravel backends to polished React and Vue frontends. I design, build, and ship complete products: ERPs, CRMs, e-commerce, and SaaS that businesses run on every day.',
+  bio: "I'm a PHP/Laravel developer with 3.7+ years spent building software businesses actually depend on. My strength is backend architecture: clean REST APIs, MySQL schemas that stay fast under load, and security done properly. I work full stack too, pairing Laravel with React, Vue, and Node to take a product from empty repo to production.",
+  location: 'India',
+  locationDetail: 'Based in India, working globally',
+  timezone: 'UTC+5:30 (IST)',
+  email: 'osama.islam29@gmail.com',
+  status: 'Available for opportunities',
+  experienceYears: 3.7,
+  heroSkills: [
+    'PHP',
+    'Laravel',
+    'MySQL',
+    'React',
+    'Next.js',
+    'Vue',
+    'Node.js',
+    'Inertia',
+    'Livewire',
+  ],
+  stats: [
+    { label: 'Years experience', value: '3.7+' },
+    { label: 'Projects completed', value: '50+' },
+    { label: 'Technologies', value: '15+' },
+  ],
+  aboutTech: [
+    { name: 'PHP', level: 95 },
+    { name: 'Laravel', level: 92 },
+    { name: 'MySQL', level: 90 },
+    { name: 'React', level: 78 },
+    { name: 'Vue', level: 75 },
+    { name: 'Inertia/Livewire', level: 85 },
+    { name: 'JavaScript', level: 82 },
+  ],
+  social: {
+    github: 'https://github.com/Osamaislam1',
+    linkedin: 'https://linkedin.com/in/osama-islam',
+    freelancer: 'https://www.freelancer.com/u/Osamaislam077',
+  },
+  nav: [
+    { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'education', label: 'Education' },
+    { id: 'contact', label: 'Contact' },
+  ],
+} as const;
+
+export const web3formsKey = 'd1e75f86-349a-42dd-9def-ee07fe3eb0bf';

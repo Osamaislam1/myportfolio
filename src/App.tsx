@@ -1,175 +1,108 @@
-// App.tsx - Terminal Portfolio
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { useLenis } from './hooks/useLenis';
+import { gsap, prefersReducedMotion } from './lib/gsap';
+import Preloader from './components/Preloader';
+import CustomCursor from './components/ui/CustomCursor';
+import Marquee from './components/ui/Marquee';
+import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
+// import Testimonials from './components/Testimonials';
 import Education from './components/Education';
 import Contact from './components/Contact';
-import MatrixRain from './components/effects/MatrixRain';
-import ScanLines from './components/effects/ScanLines';
-import TerminalNav from './components/navigation/TerminalNav';
+import Footer from './components/Footer';
+
+const marqueeItems = [
+  'PHP',
+  'Laravel',
+  'MySQL',
+  'React',
+  'Next.js',
+  'Vue',
+  'Node.js',
+  'Inertia',
+  'Livewire',
+  'REST APIs',
+  'SaaS',
+  'Full Stack',
+];
 
 function App() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [currentSection, setCurrentSection] = useState<string>('home');
-    const [bootSequence, setBootSequence] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentSection, setCurrentSection] = useState('home');
 
-    // Boot sequence messages
-    const bootMessages = [
-        'Initializing system...',
-        'Loading kernel modules...',
-        'Mounting file systems...',
-        'Starting network services...',
-        'Loading portfolio data...',
-        'Establishing secure connection...',
-        'System ready.',
+  useLenis();
+
+  // As the curtain lifts, the page scales in from slightly below rest
+  const handleReveal = () => {
+    if (prefersReducedMotion()) return;
+    gsap.fromTo(
+      'main',
+      { scale: 0.96, y: 28, transformOrigin: 'center top' },
+      { scale: 1, y: 0, duration: 1.1, ease: 'power3.out', clearProps: 'transform' }
+    );
+  };
+
+  // Lock scroll while the preloader plays
+  useEffect(() => {
+    document.body.style.overflow = loading ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [loading]);
+
+  useEffect(() => {
+    const sections = [
+      'home',
+      'about',
+      'experience',
+      'projects',
+      'skills',
+      'education',
+      'contact',
     ];
 
-    useEffect(() => {
-        // Simulate boot sequence
-        let messageIndex = 0;
-        const bootInterval = setInterval(() => {
-            if (messageIndex < bootMessages.length) {
-                setBootSequence(prev => [...prev, bootMessages[messageIndex]]);
-                messageIndex++;
-            } else {
-                clearInterval(bootInterval);
-                setTimeout(() => setIsLoading(false), 500);
-            }
-        }, 350);
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
 
-        return () => clearInterval(bootInterval);
-    }, []);
-
-    // Track current section based on scroll
-    useEffect(() => {
-        const sections = ['home', 'about', 'experience', 'projects', 'education', 'skills', 'contact'];
-
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-            for (const section of sections) {
-                const element = document.getElementById(section);
-                if (element) {
-                    const { offsetTop, offsetHeight } = element;
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        setCurrentSection(section);
-                        break;
-                    }
-                }
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Navigate to section
-    const handleNavigate = useCallback((sectionId: string) => {
-        const element = document.getElementById(sectionId);
+      for (const section of sections) {
+        const element = document.getElementById(section);
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setCurrentSection(section);
+            break;
+          }
         }
-    }, []);
+      }
+    };
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-terminal-darker flex items-center justify-center relative overflow-hidden">
-                {/* Matrix rain in background */}
-                <MatrixRain />
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-                {/* Boot sequence terminal */}
-                <div className="relative z-10 w-full max-w-2xl mx-4">
-                    <div className="terminal-window">
-                        <div className="terminal-header">
-                            <div className="terminal-btn terminal-btn-close" />
-                            <div className="terminal-btn terminal-btn-minimize" />
-                            <div className="terminal-btn terminal-btn-maximize" />
-                            <span className="ml-4 text-terminal-dim text-sm font-mono">system-boot</span>
-                        </div>
-
-                        <div className="p-6 font-mono text-sm min-h-[300px]">
-                            <div className="text-terminal-green mb-4">
-                                <span className="text-terminal-cyan">OSAMA-PORTFOLIO</span> Boot Sequence v1.0.0
-                            </div>
-
-                            {bootSequence.map((message, index) => (
-                                <div
-                                    key={index}
-                                    className={`mb-2 ${index === bootSequence.length - 1 ? 'text-terminal-green' : 'text-terminal-dim'}`}
-                                >
-                                    <span className="text-terminal-amber">[{String(index + 1).padStart(2, '0')}]</span>
-                                    <span className="ml-2">{message}</span>
-                                    {index === bootSequence.length - 1 && message !== 'System ready.' && (
-                                        <span className="animate-blink ml-1">▌</span>
-                                    )}
-                                    {message === 'System ready.' && (
-                                        <span className="text-terminal-green ml-2">✓</span>
-                                    )}
-                                </div>
-                            ))}
-
-                            {bootSequence.length < bootMessages.length && (
-                                <div className="text-terminal-green">
-                                    <span className="animate-blink">▌</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Loading progress bar */}
-                    <div className="mt-4 h-1 bg-terminal-dark rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-terminal-green transition-all duration-300 shadow-terminal"
-                            style={{ width: `${(bootSequence.length / bootMessages.length) * 100}%` }}
-                        />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div className="min-h-screen bg-terminal-darker relative overflow-x-hidden">
-            {/* Background Effects */}
-            <MatrixRain />
-            <ScanLines />
-
-            {/* Grid pattern overlay */}
-            <div className="fixed inset-0 bg-grid pointer-events-none z-0" />
-
-            {/* Main Content */}
-            <main className="relative z-10">
-                <Hero />
-                <About />
-                <Experience />
-                <Projects />
-                <Education />
-                <Skills />
-                <Contact />
-            </main>
-
-            {/* Terminal Navigation */}
-            <TerminalNav
-                currentSection={currentSection}
-                onNavigate={handleNavigate}
-            />
-
-            {/* Footer */}
-            <footer className="relative z-10 py-8 border-t border-terminal-green/20 bg-terminal-darker/80 backdrop-blur-sm">
-                <div className="max-w-6xl mx-auto px-4 text-center font-mono text-sm">
-                    <div className="text-terminal-dim mb-2">
-                        <span className="text-terminal-green">$</span> echo "© 2025 Osama Islam. All rights reserved."
-                    </div>
-                    <div className="text-terminal-green/50">
-                        Built with <span className="text-terminal-cyan">React</span> + <span className="text-terminal-amber">TypeScript</span> + <span className="text-terminal-magenta">TailwindCSS</span>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-paper relative grain overflow-x-hidden">
+      {loading && <Preloader onReveal={handleReveal} onComplete={() => setLoading(false)} />}
+      <CustomCursor />
+      <Header currentSection={currentSection} />
+      <main>
+        <Hero start={!loading} />
+        <Marquee items={marqueeItems} />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        {/* <Testimonials /> */}
+        <Education />
+        <Contact />
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default App;

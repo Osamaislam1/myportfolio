@@ -1,258 +1,244 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, Code, Mail, Github, Linkedin, ArrowRight } from 'lucide-react';
-import GlitchText from './effects/GlitchText';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { ArrowDown, ArrowUpRight, Github, Linkedin } from 'lucide-react';
+import { gsap, SplitText, prefersReducedMotion } from '../lib/gsap';
+import { scrollToId } from '../lib/scroll';
+import { profile } from '../data/profile';
+import SpinningBadge from './ui/SpinningBadge';
 
-const Hero = () => {
-    const [typedText, setTypedText] = useState('');
-    const [showCursor, setShowCursor] = useState(true);
-    const [commandIndex, setCommandIndex] = useState(0);
+interface HeroProps {
+  start: boolean;
+}
 
-    const fullText = "PHP / Laravel Developer";
-    const commands = [
-        { prompt: '$ whoami', output: 'Osama Islam' },
-        { prompt: '$ cat skills.txt', output: 'PHP • Laravel • MySQL • React • Inertia • Livewire' },
-        { prompt: '$ echo $EXPERIENCE', output: '3+ Years Building ERPs, CRMs & E-commerce' },
-    ];
+const Hero = ({ start }: HeroProps) => {
+  const ref = useRef<HTMLElement>(null);
 
-    // Typing effect for role
-    useEffect(() => {
-        let index = 0;
-        const timer = setInterval(() => {
-            if (index <= fullText.length) {
-                setTypedText(fullText.slice(0, index));
-                index++;
-            } else {
-                clearInterval(timer);
-            }
-        }, 100);
+  useGSAP(
+    () => {
+      if (!start || !ref.current) return;
 
-        return () => clearInterval(timer);
-    }, []);
+      if (prefersReducedMotion()) {
+        gsap.set('.hero-fade, .hero-line, .hero-underline', { opacity: 1 });
+        gsap.set('.hero-underline', { scaleX: 1 });
+        // Stacked ticker words would overlap without an animation cycling them
+        gsap.set(gsap.utils.toArray('.specialty-word').slice(1), { opacity: 0 });
+        return;
+      }
 
-    // Blinking cursor
-    useEffect(() => {
-        const cursorTimer = setInterval(() => {
-            setShowCursor(prev => !prev);
-        }, 500);
+      const tl = gsap.timeline();
 
-        return () => clearInterval(cursorTimer);
-    }, []);
+      // Headline rises word by word, line by line
+      const lines = gsap.utils.toArray<HTMLElement>('.hero-line');
+      lines.forEach((el, i) => {
+        const split = new SplitText(el, { type: 'words' });
+        gsap.set(el, { opacity: 1 });
+        tl.from(
+          split.words,
+          {
+            yPercent: 115,
+            duration: 0.95,
+            stagger: 0.06,
+            ease: 'power4.out',
+          },
+          i * 0.14
+        );
+      });
 
-    // Cycle through commands
-    useEffect(() => {
-        const commandTimer = setInterval(() => {
-            setCommandIndex(prev => (prev + 1) % commands.length);
-        }, 3000);
+      tl.to('.hero-underline', { scaleX: 1, duration: 0.7, ease: 'power3.inOut' }, '-=0.35').from(
+        '.hero-fade',
+        { y: 26, opacity: 0, stagger: 0.09, duration: 0.7, ease: 'power3.out' },
+        '-=0.6'
+      );
 
-        return () => clearInterval(commandTimer);
-    }, []);
+      // Specialty word flipper
+      const words = gsap.utils.toArray<HTMLElement>('.specialty-word');
+      if (words.length > 1) {
+        gsap.set(words, { yPercent: 100, opacity: 0 });
+        gsap.set(words[0], { yPercent: 0, opacity: 1 });
 
-    const skills = ["PHP", "Laravel", "MySQL", "React", "Inertia", "Livewire"];
+        const flip = gsap.timeline({ repeat: -1, delay: 1.6 });
+        words.forEach((word, i) => {
+          const next = words[(i + 1) % words.length];
+          flip
+            .to(word, { yPercent: -100, opacity: 0, duration: 0.5, ease: 'power3.in' })
+            .fromTo(
+              next,
+              { yPercent: 100, opacity: 0 },
+              { yPercent: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+              '<0.1'
+            )
+            .to({}, { duration: 1.7 });
+        });
+      }
 
-    return (
-        <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 md:pt-20 pb-24">
-            {/* Radial gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-radial from-terminal-green/5 via-transparent to-transparent" />
+      // Cursor-driven parallax on the decorative layers
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const blobX = gsap.quickTo('.hero-blob', 'x', { duration: 1.2, ease: 'power3' });
+        const blobY = gsap.quickTo('.hero-blob', 'y', { duration: 1.2, ease: 'power3' });
+        const markX = gsap.quickTo('.hero-mark', 'x', { duration: 1.6, ease: 'power3' });
+        const markY = gsap.quickTo('.hero-mark', 'y', { duration: 1.6, ease: 'power3' });
 
-            <div className="relative z-10 text-center px-4 max-w-5xl">
-                {/* Terminal Status Badge */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="mb-8"
-                >
-                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-dark border border-terminal-green/30 rounded-lg text-terminal-green text-sm font-mono shadow-terminal">
-                        <span className="w-2 h-2 bg-terminal-green rounded-full animate-pulse shadow-terminal" />
-                        <span className="text-terminal-dim">status:</span>
-                        <span>AVAILABLE_FOR_OPPORTUNITIES</span>
-                    </span>
-                </motion.div>
+        const onMove = (e: MouseEvent) => {
+          const dx = e.clientX / window.innerWidth - 0.5;
+          const dy = e.clientY / window.innerHeight - 0.5;
+          blobX(dx * 70);
+          blobY(dy * 70);
+          markX(dx * -40);
+          markY(dy * -40);
+        };
 
-                {/* Main Heading with Glitch Effect */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                    className="mb-6"
-                >
-                    <div className="text-terminal-dim font-mono text-lg mb-2">
-                        <span className="text-terminal-green">$</span> ./introduce.sh
-                    </div>
-                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-                        <GlitchText
-                            text="Osama Islam"
-                            className="text-terminal-green glow-text"
-                            as="span"
-                        />
-                    </h1>
-                </motion.div>
+        window.addEventListener('mousemove', onMove);
+        return () => window.removeEventListener('mousemove', onMove);
+      }
+    },
+    { dependencies: [start], scope: ref }
+  );
 
-                {/* Typing Role */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="mb-8"
-                >
-                    <div className="text-lg sm:text-xl md:text-2xl font-mono">
-                        <span className="text-terminal-cyan">&gt;</span>
-                        <span className="text-terminal-green ml-2">{typedText}</span>
-                        <span className={`text-terminal-green ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
-                    </div>
-                    <p className="text-terminal-dim mt-4 max-w-2xl mx-auto text-sm sm:text-base md:text-lg font-mono px-2">
-                        <span className="text-terminal-amber">/*</span> Building secure, scalable, and high-performance web applications.
-                        Expert in backend architecture, RESTful APIs, and MySQL optimization. Delivering ERPs, CRMs & e-commerce platforms. <span className="text-terminal-amber">*/</span>
-                    </p>
-                </motion.div>
+  // Scroll-scrub fade, independent of the intro timeline
+  useGSAP(
+    () => {
+      if (!ref.current || prefersReducedMotion()) return;
+      gsap.to('.hero-title-block', {
+        yPercent: 16,
+        opacity: 0.3,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    },
+    { scope: ref }
+  );
 
-                {/* Animated Terminal Output */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="mb-10 max-w-lg mx-auto"
-                >
-                    <div className="terminal-window">
-                        <div className="terminal-header">
-                            <div className="terminal-btn terminal-btn-close" />
-                            <div className="terminal-btn terminal-btn-minimize" />
-                            <div className="terminal-btn terminal-btn-maximize" />
-                            <span className="ml-4 text-terminal-dim text-xs font-mono">osama@portfolio:~</span>
-                        </div>
-                        <div className="p-4 font-mono text-sm text-left">
-                            <motion.div
-                                key={commandIndex}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <div className="text-terminal-green mb-1">
-                                    {commands[commandIndex].prompt}
-                                </div>
-                                <div className="text-slate-300 pl-4">
-                                    {commands[commandIndex].output}
-                                </div>
-                            </motion.div>
-                        </div>
-                    </div>
-                </motion.div>
+  return (
+    <section
+      id="home"
+      ref={ref}
+      className="min-h-screen flex flex-col justify-end relative section-pad pt-28 md:pt-32 pb-14 md:pb-16 overflow-hidden"
+    >
+      {/* Decorative layers */}
+      <div className="hero-blob absolute -top-40 -right-32 w-[34rem] h-[34rem] rounded-full bg-accent/25 blur-3xl pointer-events-none" />
+      <span
+        className="hero-mark absolute top-1/4 right-6 lg:right-24 font-display text-[14rem] lg:text-[20rem] leading-none text-outline opacity-[0.18] select-none pointer-events-none hidden sm:block"
+        aria-hidden="true"
+      >
+        *
+      </span>
 
-                {/* Skills Tags */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="flex flex-wrap justify-center gap-3 mb-10"
-                >
-                    {skills.map((skill, index) => (
-                        <motion.span
-                            key={skill}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.5 + index * 0.05 }}
-                            whileHover={{ scale: 1.05, y: -2 }}
-                            className="px-4 py-2 bg-terminal-dark/80 rounded-lg text-terminal-green text-sm font-mono border border-terminal-green/30 hover:border-terminal-green/60 hover:shadow-terminal transition-all duration-200"
-                        >
-                            <span className="text-terminal-dim mr-1">#</span>
-                            {skill}
-                        </motion.span>
-                    ))}
-                </motion.div>
+      <div className="max-w-content mx-auto w-full relative">
+        {/* Eyebrow */}
+        <div className="hero-fade flex items-center gap-2.5 mb-6 md:mb-8">
+          <span className="w-2 h-2 rounded-full bg-accent-ink animate-pulse" />
+          <span className="section-label text-ink-dim">{profile.greeting}</span>
+          <span className="hidden sm:inline w-8 h-px bg-ink/20" />
+          <span className="hidden sm:inline section-label">{profile.status}</span>
+        </div>
 
-                {/* CTA Buttons */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
-                >
-                    <motion.a
-                        href="#projects"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="group px-8 py-3 bg-terminal-green text-terminal-dark rounded-lg font-bold font-mono flex items-center gap-2 transition-all duration-200 shadow-terminal hover:shadow-terminal-lg"
-                    >
-                        <Code className="w-5 h-5" />
-                        <span>./view_projects.sh</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </motion.a>
-                    <motion.a
-                        href="#contact"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="group px-8 py-3 bg-terminal-dark border border-terminal-green/50 text-terminal-green rounded-lg font-medium font-mono flex items-center gap-2 transition-all duration-200 hover:border-terminal-green hover:shadow-terminal"
-                    >
-                        <Mail className="w-5 h-5" />
-                        <span>ssh connect@osama</span>
-                    </motion.a>
-                </motion.div>
+        {/* Statement headline + badge */}
+        <div className="hero-title-block mb-10 md:mb-12 flex items-end justify-between gap-8">
+          <h1 className="font-display font-bold text-display-xl text-ink uppercase">
+            {profile.heroHeadline.map((line, i) => {
+              const isLast = i === profile.heroHeadline.length - 1;
+              return (
+                <span key={line} className="block overflow-hidden">
+                  <span className={`hero-line block opacity-0 ${isLast ? 'text-outline' : ''}`}>
+                    {line}
+                  </span>
+                  {isLast && (
+                    <span className="hero-underline block h-1.5 md:h-2 bg-accent origin-left scale-x-0 mt-2 md:mt-3 max-w-[60%]" />
+                  )}
+                </span>
+              );
+            })}
+          </h1>
 
-                {/* Social Links */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex justify-center gap-4 mb-12"
-                >
-                    <motion.a
-                        href="https://github.com/Osamaislam1"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.1, y: -3 }}
-                        className="p-3 bg-terminal-dark/50 rounded-lg text-terminal-dim hover:text-terminal-green border border-terminal-green/20 hover:border-terminal-green/50 transition-all duration-200 hover:shadow-terminal"
-                    >
-                        <Github className="w-5 h-5" />
-                    </motion.a>
-                    <motion.a
-                        href="https://linkedin.com/in/osama-islam"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.1, y: -3 }}
-                        className="p-3 bg-terminal-dark/50 rounded-lg text-terminal-dim hover:text-terminal-cyan border border-terminal-green/20 hover:border-terminal-cyan/50 transition-all duration-200"
-                    >
-                        <Linkedin className="w-5 h-5" />
-                    </motion.a>
-                </motion.div>
+          <div className="hero-fade hidden lg:block flex-shrink-0 pb-4">
+            <SpinningBadge onClick={() => scrollToId('contact')} />
+          </div>
+        </div>
 
-                {/* Scroll Indicator - now in content flow */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="flex flex-col items-center gap-2 cursor-pointer mt-8"
-                    onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-                >
-                    <motion.div
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        className="flex flex-col items-center gap-2"
-                    >
-                        <span className="text-terminal-dim text-xs font-mono">scroll_down</span>
-                        <ChevronDown className="text-terminal-green w-6 h-6 animate-pulse" />
-                    </motion.div>
-                </motion.div>
+        {/* Specialty ticker */}
+        <div className="hero-fade flex items-center gap-3 mb-10 md:mb-14">
+          <span className="section-label">Currently shipping</span>
+          <ArrowUpRight className="w-4 h-4 text-accent-ink flex-shrink-0" />
+          <span className="relative block h-[1.5em] min-w-[12rem] md:min-w-[16rem] font-display text-lg md:text-2xl font-medium leading-none text-ink overflow-hidden">
+            {profile.specialties.map((item, i) => (
+              <span
+                key={item}
+                // Hidden until the intro timeline takes over, so the stack is never visible
+                className={`specialty-word absolute inset-0 flex items-center whitespace-nowrap ${
+                  i === 0 ? '' : 'opacity-0'
+                }`}
+              >
+                {item}
+              </span>
+            ))}
+          </span>
+        </div>
+
+        {/* Intro + CTAs */}
+        <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-end mb-14 md:mb-16">
+          <p className="hero-fade md:col-span-6 text-ink-dim text-base md:text-lg leading-relaxed max-w-xl text-balance">
+            {profile.tagline}
+          </p>
+
+          <div className="hero-fade md:col-span-6 flex flex-wrap items-center gap-4 md:justify-end">
+            <button onClick={() => scrollToId('projects')} className="btn-primary">
+              See the work
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+            <button onClick={() => scrollToId('contact')} className="btn-secondary">
+              Start a project
+            </button>
+            <div className="flex gap-2 ml-2">
+              <a
+                href={profile.social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-full border border-ink/15 text-ink-dim hover:text-ink hover:border-ink transition-colors"
+                aria-label="GitHub"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+              <a
+                href={profile.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-full border border-ink/15 text-ink-dim hover:text-ink hover:border-ink transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
             </div>
+          </div>
+        </div>
 
-            {/* Corner decorations */}
-            <div className="absolute top-8 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
-                <div>{"<portfolio>"}</div>
+        {/* Stats */}
+        <div className="hero-fade hairline pt-8 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+          {profile.stats.map((stat) => (
+            <div key={stat.label}>
+              <div className="font-display text-3xl md:text-5xl font-bold text-ink mb-1">
+                {stat.value}
+              </div>
+              <div className="section-label">{stat.label}</div>
             </div>
-            <div className="absolute top-8 right-8 text-terminal-green/20 font-mono text-xs hidden md:block">
-                <div>v1.0.0</div>
-            </div>
-            <div className="absolute bottom-8 left-8 text-terminal-green/20 font-mono text-xs hidden md:block">
-                <div>line: 001</div>
-            </div>
-            <div className="absolute bottom-8 right-20 text-terminal-green/20 font-mono text-xs hidden md:block">
-                <div>{"</portfolio>"}</div>
-            </div>
-        </section>
-    );
+          ))}
+        </div>
+
+        {/* Scroll cue */}
+        <button
+          onClick={() => scrollToId('about')}
+          className="hero-fade mt-10 md:mt-14 flex items-center gap-2 section-label hover:text-ink transition-colors"
+        >
+          <ArrowDown className="w-4 h-4 animate-bounce" />
+          Scroll to explore
+        </button>
+      </div>
+    </section>
+  );
 };
 
 export default Hero;
-
-

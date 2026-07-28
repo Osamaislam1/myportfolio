@@ -1,190 +1,66 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { User, MapPin, Calendar, FileCode, Database } from 'lucide-react';
+import { useRef } from 'react';
+import { MapPin } from 'lucide-react';
+import SectionHeader from './ui/SectionHeader';
+import SplitReveal from './ui/SplitReveal';
+import { useReveal } from '../hooks/useReveal';
+import { profile } from '../data/profile';
 
 const About = () => {
-    const { ref, inView } = useInView({
-        threshold: 0.1,
-        triggerOnce: true,
-    });
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2,
-            },
-        },
-    };
+  return (
+    <section id="about" className="section-pad hairline" ref={ref}>
+      <div className="max-w-content mx-auto">
+        <SectionHeader number="01" label="About" title="The developer behind the systems." />
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    };
-
-    const stats = [
-        { label: 'years_experience', value: '3+', icon: <Calendar className="w-4 h-4" /> },
-        { label: 'projects_completed', value: '20+', icon: <FileCode className="w-4 h-4" /> },
-        { label: 'technologies', value: '15+', icon: <Database className="w-4 h-4" /> },
-        { label: 'happy_clients', value: '10+', icon: <User className="w-4 h-4" /> },
-    ];
-
-    const technologies = [
-        { name: 'PHP', level: 95, color: 'terminal-green' },
-        { name: 'Laravel', level: 92, color: 'terminal-green' },
-        { name: 'MySQL', level: 90, color: 'terminal-cyan' },
-        { name: 'React', level: 78, color: 'terminal-cyan' },
-        { name: 'Inertia/Livewire', level: 85, color: 'terminal-amber' },
-        { name: 'JavaScript', level: 82, color: 'terminal-amber' },
-    ];
-
-    return (
-        <section id="about" className="min-h-screen py-20 px-4 md:px-8 lg:px-16 relative" ref={ref}>
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate={inView ? 'visible' : 'hidden'}
-                className="max-w-6xl mx-auto"
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Bio */}
+          <div className="lg:col-span-7">
+            <SplitReveal
+              as="p"
+              className="font-display text-2xl md:text-3xl lg:text-4xl text-ink leading-snug font-medium text-balance mb-8"
             >
-                {/* Terminal Header */}
-                <motion.div variants={itemVariants} className="mb-12">
-                    <div className="flex items-center gap-2 mb-4 font-mono text-sm">
-                        <span className="text-terminal-green">➜</span>
-                        <span className="text-terminal-cyan">~/portfolio</span>
-                        <span className="text-white">cat about.txt</span>
-                    </div>
+              {profile.bio}
+            </SplitReveal>
+            <div className="reveal flex items-center gap-2 text-ink-dim">
+              <MapPin className="w-4 h-4 text-accent-ink" />
+              <span className="text-sm">{profile.locationDetail}</span>
+            </div>
+          </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="h-px flex-grow bg-gradient-to-r from-terminal-green/50 to-transparent" />
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono text-terminal-green flex items-center gap-3">
-                            <span className="text-terminal-dim">{'//'}</span>
-                            ABOUT_ME
-                            <span className="animate-pulse">_</span>
-                        </h2>
-                        <div className="h-px flex-grow bg-gradient-to-l from-terminal-green/50 to-transparent" />
-                    </div>
-                </motion.div>
-
-                <div className="grid md:grid-cols-2 gap-8">
-                    {/* Left Column - Bio */}
-                    <motion.div variants={itemVariants}>
-                        <div className="terminal-window h-full">
-                            <div className="terminal-header">
-                                <div className="terminal-btn terminal-btn-close" />
-                                <div className="terminal-btn terminal-btn-minimize" />
-                                <div className="terminal-btn terminal-btn-maximize" />
-                                <span className="ml-4 text-terminal-dim text-xs font-mono">about.txt</span>
-                            </div>
-
-                            <div className="p-6 font-mono text-sm space-y-4">
-                                <div className="text-terminal-amber">/* Personal Information */</div>
-
-                                <div className="space-y-2">
-                                    <p className="text-slate-300">
-                                        <span className="text-terminal-cyan">const</span>{' '}
-                                        <span className="text-terminal-green">developer</span> = {'{'}
-                                    </p>
-                                    <p className="pl-4 text-slate-300">
-                                        <span className="text-terminal-amber">name</span>: <span className="text-terminal-green">"Osama Islam"</span>,
-                                    </p>
-                                    <p className="pl-4 text-slate-300">
-                                        <span className="text-terminal-amber">role</span>: <span className="text-terminal-green">"PHP/Laravel Developer"</span>,
-                                    </p>
-                                    <p className="pl-4 text-slate-300">
-                                        <span className="text-terminal-amber">location</span>: <span className="text-terminal-green">"India"</span>,
-                                    </p>
-                                    <p className="pl-4 text-slate-300">
-                                        <span className="text-terminal-amber">experience</span>: <span className="text-terminal-cyan">3</span>,
-                                    </p>
-                                    <p className="text-slate-300">{'}'}</p>
-                                </div>
-
-                                <div className="border-t border-terminal-green/20 pt-4 mt-4">
-                                    <p className="text-terminal-dim leading-relaxed">
-                                        Results-driven PHP/Laravel Developer with 3 years of experience building secure,
-                                        scalable, and high-performance web applications. Expert in backend architecture,
-                                        RESTful API development, and MySQL optimization. Delivered business-critical
-                                        systems including ERPs, CRMs, and e-commerce platforms.
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-terminal-dim">
-                                    <MapPin className="w-4 h-4 text-terminal-green" />
-                                    <span>Based in India, working globally</span>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Right Column - Stats & Skills */}
-                    <motion.div variants={itemVariants} className="space-y-6">
-                        {/* Stats Grid */}
-                        <div className="grid grid-cols-2 gap-4">
-                            {stats.map((stat, index) => (
-                                <motion.div
-                                    key={stat.label}
-                                    className="matrix-card p-4"
-                                    whileHover={{ scale: 1.02, borderColor: 'rgba(0, 255, 65, 0.4)' }}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                                    transition={{ delay: 0.4 + index * 0.1 }}
-                                >
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className="text-terminal-green">{stat.icon}</span>
-                                        <span className="text-terminal-dim font-mono text-xs">{stat.label}</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-terminal-green font-mono glow-text-sm">
-                                        {stat.value}
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-
-                        {/* Skills Progress */}
-                        <div className="terminal-window">
-                            <div className="terminal-header">
-                                <div className="terminal-btn terminal-btn-close" />
-                                <div className="terminal-btn terminal-btn-minimize" />
-                                <div className="terminal-btn terminal-btn-maximize" />
-                                <span className="ml-4 text-terminal-dim text-xs font-mono">skills.log</span>
-                            </div>
-
-                            <div className="p-4 space-y-3">
-                                <div className="text-terminal-green font-mono text-xs mb-4">
-                                    $ npm list --depth=0
-                                </div>
-
-                                {technologies.map((tech, index) => (
-                                    <motion.div
-                                        key={tech.name}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                                        transition={{ delay: 0.5 + index * 0.1 }}
-                                        className="space-y-1"
-                                    >
-                                        <div className="flex justify-between font-mono text-xs">
-                                            <span className="text-terminal-dim">├── {tech.name}</span>
-                                            <span className={`text-${tech.color}`}>{tech.level}%</span>
-                                        </div>
-                                        <div className="h-1.5 bg-terminal-dark rounded-full overflow-hidden">
-                                            <motion.div
-                                                className={`h-full bg-${tech.color} shadow-terminal`}
-                                                initial={{ width: 0 }}
-                                                animate={inView ? { width: `${tech.level}%` } : { width: 0 }}
-                                                transition={{ duration: 1, delay: 0.6 + index * 0.1 }}
-                                            />
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.div>
+          {/* Tech proficiency */}
+          <div className="lg:col-span-5">
+            <p className="reveal section-label mb-6">Core proficiency</p>
+            <div className="space-y-5">
+              {profile.aboutTech.map((tech) => (
+                <div key={tech.name} className="reveal">
+                  <div className="flex justify-between items-baseline mb-2">
+                    <span className="text-sm font-medium text-ink">{tech.name}</span>
+                    <span className="font-mono text-xs text-ink-faint">{tech.level}%</span>
+                  </div>
+                  <div className="skill-bar">
+                    <div className="skill-bar-fill bar-fill-anim" style={{ width: `${tech.level}%` }} />
+                  </div>
                 </div>
-            </motion.div>
-        </section>
-    );
+              ))}
+            </div>
+
+            <div className="reveal mt-10 flex flex-wrap gap-2">
+              {profile.heroSkills.map((skill) => (
+                <span
+                  key={skill}
+                  className="px-3 py-1.5 rounded-full border border-ink/10 text-xs text-ink-dim tracking-wide hover:border-accent-ink/50 hover:text-accent-ink transition-colors"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default About;

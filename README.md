@@ -1,248 +1,246 @@
-# Terminal Portfolio 🖥️
+# Osama Islam Portfolio
 
-A creative, hacker-themed personal portfolio website built with React, TypeScript, Vite, and TailwindCSS. Features a unique terminal/command-line aesthetic with matrix-style effects, glitch animations, and interactive navigation.
+A light, motion-led personal portfolio for a PHP / Laravel full-stack developer. Built with React, TypeScript, Vite, and Tailwind CSS, with GSAP + Lenis for scroll and intro animations.
 
-![Terminal Portfolio](https://img.shields.io/badge/Theme-Hacker%20Terminal-00ff41?style=flat-square)
+![Theme](https://img.shields.io/badge/Theme-Light%20Editorial-C8FF00?style=flat-square)
 ![React](https://img.shields.io/badge/React-18.x-61dafb?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square&logo=typescript)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38bdf8?style=flat-square&logo=tailwindcss)
+![GSAP](https://img.shields.io/badge/GSAP-3.x-88CE02?style=flat-square)
 
-## ✨ Features
+## Features
 
-- **Terminal Aesthetic** - Command-line inspired UI with green-on-black theme
-- **Matrix Rain Effect** - Animated falling characters background
-- **Interactive Terminal Navigation** - Navigate using terminal commands
-- **Glitch Text Effects** - Cyberpunk-style text animations
-- **Scanlines Overlay** - Retro CRT monitor effect
-- **Typing Animations** - Real-time typing effect for text
-- **Fully Responsive** - Optimized for mobile, tablet, and desktop
-- **Contact Form** - Working email form via Web3Forms API
-- **Smooth Animations** - Framer Motion powered transitions
+- **Light immersive design** - Paper / ink palette with electric lime accent
+- **Cinematic preloader** - Multilingual greetings, progress line, name beat, dual-panel curtain exit
+- **Scroll-driven motion** - GSAP ScrollTrigger reveals, SplitText headlines, Lenis smooth scroll
+- **Custom cursor** - Interactive ring / label on fine-pointer devices
+- **Statement hero** - Large typography, specialty ticker, spinning badge, parallax accents
+- **Project rows** - Hover inversion + detail modal
+- **Fully responsive** - Tuned for mobile, tablet, and desktop
+- **Reduced motion** - Animations skip when `prefers-reduced-motion` is set
+- **Contact form** - Email via Web3Forms
 
-## �️ Sections
+## Sections
 
 | Section | File | Description |
 |---------|------|-------------|
-| Hero | `Hero.tsx` | Main landing with glitch name, typing animation |
-| About | `About.tsx` | Personal info in code-style format |
-| Experience | `Experience.tsx` | Git-commit style work timeline |
-| Projects | `Projects.tsx` | Filterable project grid with modal details |
-| Skills | `Skills.tsx` | Categorized skills with proficiency bars |
-| Education | `Education.tsx` | Academic background & certifications |
-| Contact | `Contact.tsx` | Terminal-themed contact form |
+| Preloader | `Preloader.tsx` | Three-stage intro before the page handoff |
+| Hero | `Hero.tsx` | Headline, specialties ticker, stats, CTAs |
+| Marquee | `ui/Marquee.tsx` | Tech / focus strip under the hero |
+| About | `About.tsx` | Bio and core stack |
+| Experience | `Experience.tsx` | Role timeline |
+| Projects | `Projects.tsx` | Featured work with modal details |
+| Skills | `Skills.tsx` | Categorized skills with animated bars |
+| Education | `Education.tsx` | Degrees and certifications |
+| Contact | `Contact.tsx` | Form + contact details |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
+
 - Node.js (v18+)
 - npm or yarn
 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/Osamaislam1/myportfolio.git
 cd myportfolio
 
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-
-# Build for production
 npm run build
 ```
 
-## 🎨 Customization Guide
+## Customization Guide
 
-### 1. Personal Information
+Content lives in `src/data/`. Edit those files instead of hunting through components.
 
-**Hero Section** (`src/components/Hero.tsx`):
-```tsx
-// Line ~84-88: Update your name
-<GlitchText text="Your Name" className="text-terminal-green glow-text" />
+### 1. Profile (`src/data/profile.ts`)
 
-// Line ~51: Update your skills
-const skills = ["Skill1", "Skill2", "Skill3", "Skill4"];
-
-// Line ~104-107: Update your bio
-<p>Your professional description here</p>
+```ts
+export const profile = {
+  name: 'Your Name',
+  role: 'Your Role',
+  greeting: "Hey, I'm Your Name",
+  heroHeadline: ['LINE ONE', 'LINE TWO', 'LINE THREE.'],
+  specialties: ['ERPs', 'CRMs', 'E-commerce'],
+  tagline: 'Short supporting sentence for the hero.',
+  bio: 'Longer about-section bio.',
+  email: 'you@example.com',
+  social: {
+    github: 'https://github.com/you',
+    linkedin: 'https://linkedin.com/in/you',
+  },
+  stats: [
+    { label: 'Years experience', value: '3.7+' },
+    { label: 'Projects completed', value: '50+' },
+    { label: 'Technologies', value: '15+' },
+  ],
+};
 ```
 
-**About Section** (`src/components/About.tsx`):
-```tsx
-// Line ~91-100: Update personal details
-<span className="text-terminal-green">"Your Name"</span>
-<span className="text-terminal-green">"Your Role"</span>
-<span className="text-terminal-green">"Your Location"</span>
-```
+Also update `web3formsKey` at the bottom of the same file for the contact form.
 
-### 2. Experience (`src/components/Experience.tsx`)
-```tsx
-// Line ~22-50: Update experiences array
-const experiences: ExperienceItem[] = [
-    {
-        id: 1,
-        company: 'Company Name',
-        role: 'Your Role',
-        period: 'Start - End',
-        location: 'Location',
-        description: ['Achievement 1', 'Achievement 2'],
-        technologies: ['Tech1', 'Tech2', 'Tech3'],
-    },
-];
-```
+### 2. Experience (`src/data/experience.ts`)
 
-### 3. Projects (`src/components/Projects.tsx`)
-```tsx
-// Line ~31-100: Update projects array
-const projects: Project[] = [
-    {
-        id: 1,
-        title: 'Project Name',
-        description: 'Short description',
-        longDescription: 'Detailed description',
-        technologies: ['Tech1', 'Tech2'],
-        features: ['Feature 1', 'Feature 2'],
-        liveUrl: 'https://your-project.com',
-        category: 'fullstack', // 'fullstack' | 'frontend' | 'backend'
-    },
-];
-```
-
-### 4. Skills (`src/components/Skills.tsx`)
-```tsx
-// Line ~27-68: Update skill categories
-const skillCategories = [
-    {
-        title: 'Category Name',
-        icon: <IconComponent />,
-        skills: [
-            { name: 'Skill', level: 90 }, // level is 0-100
-        ],
-    },
-];
-```
-
-### 5. Education (`src/components/Education.tsx`)
-```tsx
-// Update education array with your degrees
-// Update certifications array with your certificates
-```
-
-### 6. Contact Form Setup ⚡
-
-The contact form uses **Web3Forms** for email delivery. To set up:
-
-1. **Get API Key**: Visit [web3forms.com](https://web3forms.com/) and create a free account
-2. **Update API Key** in `src/components/Contact.tsx`:
-```tsx
-// Line ~84: Replace with your Web3Forms access key
-<input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
-```
-
-3. **Update Contact Info** (Line ~93-136):
-```tsx
-// Update email
-<span>your.email@example.com</span>
-
-// Update location
-<span>Your City, Country</span>
-
-// Update social links
-href="https://github.com/yourusername"
-href="https://linkedin.com/in/yourprofile"
-```
-
-### 7. Colors & Theme (`tailwind.config.js`)
-```js
-// Customize terminal colors
-colors: {
-    terminal: {
-        green: '#00ff41',    // Main accent color
-        dark: '#0a0a0a',     // Background
-        cyan: '#00d4ff',     // Secondary accent
-        amber: '#ffb000',    // Warning/highlight
-    },
+```ts
+{
+  company: 'Company Name',
+  role: 'Your Role',
+  period: 'Start - End',
+  location: 'Location',
+  description: ['Achievement 1', 'Achievement 2'],
+  technologies: ['Tech1', 'Tech2'],
 }
 ```
 
-### 8. Social Links
+### 3. Projects (`src/data/projects.ts`)
 
-Update in `Hero.tsx` (Line ~200-217):
-```tsx
-href="https://github.com/yourusername"
-href="https://linkedin.com/in/yourprofile"
+```ts
+{
+  id: 1,
+  title: 'Project Name',
+  description: 'Short description',
+  longDescription: 'Detailed description',
+  technologies: ['Laravel', 'React'],
+  features: ['Feature 1', 'Feature 2'],
+  liveUrl: 'https://your-project.com',
+  category: 'fullstack', // 'fullstack' | 'frontend' | 'backend'
+}
 ```
 
-## 📁 Project Structure
+### 4. Skills (`src/data/skills.ts`)
+
+```ts
+{
+  title: 'Backend',
+  skills: [
+    { name: 'Laravel', level: 92 }, // 0-100
+  ],
+}
+```
+
+### 5. Education (`src/data/education.ts`)
+
+Update the education and certifications arrays in that file.
+
+### 6. Contact form
+
+1. Get a free key at [web3forms.com](https://web3forms.com/)
+2. Set it in `src/data/profile.ts`:
+
+```ts
+export const web3formsKey = 'YOUR_ACCESS_KEY_HERE';
+```
+
+### 7. Theme (`tailwind.config.js`)
+
+```js
+colors: {
+  paper: {
+    DEFAULT: '#FAFAF8',
+    soft: '#F1F1EE',
+    lift: '#E9E9E5',
+  },
+  ink: {
+    DEFAULT: '#111110',
+    dim: '#4A4A46',
+    faint: '#8A8A83',
+  },
+  accent: {
+    DEFAULT: '#C8FF00',
+    ink: '#6F9E00',
+    dark: '#A3D000',
+  },
+}
+```
+
+Fonts: Space Grotesk (display), Inter (body), IBM Plex Mono (labels). Global utilities live in `src/index.css`.
+
+## Project Structure
 
 ```
 myportfolio/
 ├── public/
-│   └── resume.pdf           # Your resume PDF
+│   └── resume.pdf
 ├── src/
 │   ├── components/
-│   │   ├── effects/         # Visual effects (Matrix, Glitch, etc.)
-│   │   ├── layout/          # Layout components
-│   │   ├── navigation/      # Terminal navigation
-│   │   ├── About.tsx
-│   │   ├── Contact.tsx
-│   │   ├── Education.tsx
-│   │   ├── Experience.tsx
+│   │   ├── ui/                 # Cursor, Marquee, SplitReveal, etc.
+│   │   ├── Preloader.tsx
+│   │   ├── Header.tsx
 │   │   ├── Hero.tsx
+│   │   ├── About.tsx
+│   │   ├── Experience.tsx
 │   │   ├── Projects.tsx
-│   │   └── Skills.tsx
+│   │   ├── Skills.tsx
+│   │   ├── Education.tsx
+│   │   ├── Contact.tsx
+│   │   └── Footer.tsx
+│   ├── data/                   # All editable content
+│   │   ├── profile.ts
+│   │   ├── experience.ts
+│   │   ├── projects.ts
+│   │   ├── skills.ts
+│   │   ├── education.ts
+│   │   └── testimonials.ts
+│   ├── hooks/
+│   │   ├── useLenis.ts
+│   │   └── useReveal.ts
+│   ├── lib/
+│   │   ├── gsap.ts
+│   │   └── scroll.ts
 │   ├── App.tsx
-│   ├── index.css            # Global styles
+│   ├── index.css
 │   └── main.tsx
-├── tailwind.config.js       # Theme configuration
+├── tailwind.config.js
 └── package.json
 ```
 
-## 🛠️ Built With
+## Built With
 
-- **React 18** - UI Framework
-- **TypeScript** - Type Safety
-- **Vite** - Build Tool
-- **TailwindCSS** - Styling
-- **Framer Motion** - Animations
+- **React 18** - UI
+- **TypeScript** - Types
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **GSAP** (+ ScrollTrigger, SplitText, `@gsap/react`) - Motion
+- **Lenis** - Smooth scrolling
 - **Lucide React** - Icons
-- **Web3Forms** - Contact Form API
+- **Web3Forms** - Contact form API
 
-## � Responsive Breakpoints
+## Responsive Breakpoints
 
-| Breakpoint | Screen Size |
+| Breakpoint | Screen size |
 |------------|-------------|
-| Mobile | < 480px |
-| Tablet | < 768px |
-| Desktop | > 768px |
+| Mobile | &lt; 768px |
+| Tablet | 768px - 1024px |
+| Desktop | &gt; 1024px |
 
-## 🚢 Deployment
+## Deployment
 
 Recommended platforms:
-- **Vercel** (recommended for Vite apps)
+
+- **Vercel** (good fit for Vite)
 - **Netlify**
 - **GitHub Pages**
 
 ```bash
-# Build and deploy to Vercel
 npm run build
 vercel --prod
 ```
 
-## 📝 License
+## License
 
-MIT License - feel free to use for your own portfolio!
+MIT License - feel free to use for your own portfolio.
 
-## 👨‍💻 Author
+## Author
 
 **Osama Islam**
+
 - Portfolio: [osamaislam.vercel.app](https://osamaislam.vercel.app)
 - GitHub: [@Osamaislam1](https://github.com/Osamaislam1)
 - LinkedIn: [osama-islam](https://linkedin.com/in/osama-islam)
 
 ---
 
-⭐ Star this repo if you found it helpful!
+Star this repo if you found it helpful.
