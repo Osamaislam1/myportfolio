@@ -111,7 +111,7 @@ const Preloader = ({ onReveal, onComplete }: PreloaderProps) => {
 
         {/* Corner metadata */}
         <p className="absolute top-5 left-5 md:top-8 md:left-10 font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] text-paper/40">
-          Osama Islam / Portfolio © 2026
+          Osama Islam
         </p>
         <p className="absolute top-5 right-5 md:top-8 md:right-10 font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] text-paper/40 text-right">
           Full Stack / Laravel
